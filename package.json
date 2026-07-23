@@ -1,0 +1,27 @@
+{
+  "name": "open-image-prompts",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Discover beautiful AI images, explore the prompts behind them, and copy them into your own workflow.",
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  },
+  "scripts": {
+    "setup": "npm run data:pull && npm --prefix web ci",
+    "setup:web": "npm run setup",
+    "data:pull": "git lfs pull",
+    "dev": "npm --prefix web run dev",
+    "status": "node scripts/run_python.mjs skills/img-gen-prompts/scripts/oip.py status",
+    "test": "npm run verify:data && npm run test:api && npm --prefix web test",
+    "test:api": "node scripts/run_python.mjs server/test_oip_api.py",
+    "verify:data": "node scripts/run_python.mjs scripts/verify_public_data.py",
+    "lint": "npm --prefix web run lint",
+    "build": "npm --prefix web run build",
+    "preview": "npm run build && npm --prefix web run preview"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NanmiCoder/open-image-prompts.git"
+  },
+  "license": "MIT"
+}

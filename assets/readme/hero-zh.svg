@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="420" viewBox="0 0 1200 420" role="img" aria-labelledby="title desc">
+  <title id="title">Open Image Prompts — 两个智能体技能</title>
+  <desc id="desc">Img Gen Taste 决定美术方向，Img Gen Prompts 检索可追溯的提示词图片参考；两个 Skill 可以独立使用，也可以按需串联。</desc>
+  <defs>
+    <linearGradient id="glow" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#F4B95C" stop-opacity=".19"/>
+      <stop offset="1" stop-color="#F4B95C" stop-opacity="0"/>
+    </linearGradient>
+    <pattern id="grain" width="18" height="18" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1" fill="#F6F1E7" opacity=".045"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="420" rx="24" fill="#090A0B"/>
+  <circle cx="1060" cy="18" r="310" fill="url(#glow)"/>
+  <rect width="1200" height="420" rx="24" fill="url(#grain)"/>
+
+  <g transform="translate(70 56)">
+    <text x="0" y="0" fill="#F4B95C" font-family="ui-monospace, SFMono-Regular, Menlo, PingFang SC, monospace" font-size="14" letter-spacing="3">两个可安装的智能体技能</text>
+    <text x="0" y="64" fill="#F6F1E7" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, PingFang SC, sans-serif" font-size="58" font-weight="700">Open Image Prompts</text>
+    <text x="0" y="105" fill="#AAA79F" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, PingFang SC, sans-serif" font-size="20">决定画面，找到依据，保留每一条来源。</text>
+  </g>
+
+  <g font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, PingFang SC, sans-serif">
+    <g id="taste-card" transform="translate(70 202)">
+      <rect width="500" height="142" rx="16" fill="#141517" stroke="#7B6031"/>
+      <rect x="20" y="18" width="108" height="24" rx="12" fill="#F4B95C"/>
+      <text x="74" y="35" text-anchor="middle" fill="#18130B" font-size="12" font-weight="700" letter-spacing="2">美术方向</text>
+      <text x="20" y="75" fill="#F6F1E7" font-size="25" font-weight="700">img-gen-taste</text>
+      <text x="20" y="103" fill="#C9C5BC" font-size="17">这张图应该长什么样？</text>
+      <g transform="translate(20 116)" font-family="ui-monospace, SFMono-Regular, Menlo, PingFang SC, monospace" font-size="11">
+        <text x="0" y="11" fill="#F4B95C">39 张精选风格卡</text>
+        <circle cx="124" cy="7" r="2" fill="#696B6F"/>
+        <text x="137" y="11" fill="#92908A">2–3 个方向 → CREATIVE_SPEC</text>
+      </g>
+      <g transform="translate(402 25)" fill="none" stroke-width="1.5">
+        <rect x="0" y="20" width="42" height="54" rx="6" fill="#1B1D20" stroke="#484A4F"/>
+        <rect x="14" y="10" width="42" height="54" rx="6" fill="#18191C" stroke="#6F5730"/>
+        <rect x="28" width="42" height="54" rx="6" fill="#171819" stroke="#F4B95C"/>
+        <path d="M38 14h22M38 23h16M38 40h22" stroke="#F4B95C" opacity=".68"/>
+      </g>
+    </g>
+
+    <g id="prompts-card" transform="translate(630 202)">
+      <rect width="500" height="142" rx="16" fill="#141517" stroke="#3A3B3F"/>
+      <rect x="20" y="18" width="108" height="24" rx="12" fill="#27282B" stroke="#45464A"/>
+      <text x="74" y="35" text-anchor="middle" fill="#D1CEC7" font-size="12" font-weight="700" letter-spacing="2">真实参考</text>
+      <text x="20" y="75" fill="#F6F1E7" font-size="25" font-weight="700">img-gen-prompts</text>
+      <text x="20" y="103" fill="#C9C5BC" font-size="17">有哪些真实图片和原始提示词？</text>
+      <g transform="translate(20 116)" font-family="ui-monospace, SFMono-Regular, Menlo, PingFang SC, monospace" font-size="11">
+        <text x="0" y="11" fill="#F4B95C">14,693 提示词 · 24,684 图片</text>
+        <circle cx="183" cy="7" r="2" fill="#696B6F"/>
+        <text x="196" y="11" fill="#92908A">来源 · 作者 · 画廊</text>
+      </g>
+      <g transform="translate(421 22)">
+        <rect width="55" height="42" rx="6" fill="#202124" stroke="#47484D"/>
+        <path d="M8 31 20 20l8 7 8-10 11 14" fill="none" stroke="#F4B95C" stroke-width="1.5"/>
+        <circle cx="15" cy="12" r="3" fill="#F4B95C" opacity=".8"/>
+        <path d="M2 59h51M2 68h38M2 77h45" stroke="#777A7F" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="4" cy="94" r="3" fill="#F4B95C"/>
+        <path d="M13 94h37" stroke="#5F6166" stroke-width="2" stroke-linecap="round"/>
+      </g>
+    </g>
+  </g>
+
+  <g transform="translate(468 365)" font-family="ui-monospace, SFMono-Regular, Menlo, PingFang SC, monospace">
+    <path d="M0 13h52" stroke="#4A4B4F" stroke-width="1.5"/>
+    <path d="m46 8 6 5-6 5" fill="none" stroke="#F4B95C" stroke-width="1.5"/>
+    <rect x="64" width="200" height="27" rx="13.5" fill="#111214" stroke="#343539"/>
+    <text x="164" y="18" text-anchor="middle" fill="#8E8C87" font-size="12" letter-spacing="1.4">各自独立 · 需要时串联</text>
+    <path d="M276 13h52" stroke="#4A4B4F" stroke-width="1.5"/>
+  </g>
+
+  <text x="1130" y="392" text-anchor="end" fill="#696B6F" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11">oip-visual-v2</text>
+</svg>

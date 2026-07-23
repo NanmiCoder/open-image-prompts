@@ -1,0 +1,13 @@
+.git
+.gitignore
+.oip
+.DS_Store
+*.log
+**/__pycache__
+*.py[cod]
+node_modules
+web/node_modules
+web/dist
+db/*.db
+db/*.db-wal
+db/*.db-shm

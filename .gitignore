@@ -1,0 +1,14 @@
+.DS_Store
+*.log
+.env
+.env.*
+__pycache__/
+*.py[cod]
+node_modules/
+web/node_modules/
+web/dist/
+db/*.db
+db/*.db-wal
+db/*.db-shm
+.oip/
+db/*.lock

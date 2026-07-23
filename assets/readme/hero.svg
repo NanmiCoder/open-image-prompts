@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="420" viewBox="0 0 1200 420" role="img" aria-labelledby="title desc">
+  <title id="title">Open Image Prompts — two Agent Skills</title>
+  <desc id="desc">Img Gen Taste decides the art direction. Img Gen Prompts finds traceable prompt-image references. Each Skill works alone or hands off to the other.</desc>
+  <defs>
+    <linearGradient id="glow" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#F4B95C" stop-opacity=".19"/>
+      <stop offset="1" stop-color="#F4B95C" stop-opacity="0"/>
+    </linearGradient>
+    <pattern id="grain" width="18" height="18" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1" fill="#F6F1E7" opacity=".045"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="420" rx="24" fill="#090A0B"/>
+  <circle cx="1060" cy="18" r="310" fill="url(#glow)"/>
+  <rect width="1200" height="420" rx="24" fill="url(#grain)"/>
+
+  <g transform="translate(70 56)">
+    <text x="0" y="0" fill="#F4B95C" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="14" letter-spacing="3">TWO INSTALLABLE AGENT SKILLS</text>
+    <text x="0" y="64" fill="#F6F1E7" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="58" font-weight="700">Open Image Prompts</text>
+    <text x="0" y="105" fill="#AAA79F" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="20">Decide the look. Find the evidence. Keep every source traceable.</text>
+  </g>
+
+  <g font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif">
+    <g id="taste-card" transform="translate(70 202)">
+      <rect width="500" height="142" rx="16" fill="#141517" stroke="#7B6031"/>
+      <rect x="20" y="18" width="132" height="24" rx="12" fill="#F4B95C"/>
+      <text x="86" y="35" text-anchor="middle" fill="#18130B" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11" font-weight="700" letter-spacing="1.5">ART DIRECTION</text>
+      <text x="20" y="75" fill="#F6F1E7" font-size="25" font-weight="700">img-gen-taste</text>
+      <text x="20" y="103" fill="#C9C5BC" font-size="16">What should this image look like?</text>
+      <g transform="translate(20 116)" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11">
+        <text x="0" y="11" fill="#F4B95C">39 CURATED STYLE CARDS</text>
+        <circle cx="188" cy="7" r="2" fill="#696B6F"/>
+        <text x="201" y="11" fill="#92908A">2–3 DIRECTIONS → CREATIVE_SPEC</text>
+      </g>
+      <g transform="translate(402 25)" fill="none" stroke-width="1.5">
+        <rect x="0" y="20" width="42" height="54" rx="6" fill="#1B1D20" stroke="#484A4F"/>
+        <rect x="14" y="10" width="42" height="54" rx="6" fill="#18191C" stroke="#6F5730"/>
+        <rect x="28" width="42" height="54" rx="6" fill="#171819" stroke="#F4B95C"/>
+        <path d="M38 14h22M38 23h16M38 40h22" stroke="#F4B95C" opacity=".68"/>
+      </g>
+    </g>
+
+    <g id="prompts-card" transform="translate(630 202)">
+      <rect width="500" height="142" rx="16" fill="#141517" stroke="#3A3B3F"/>
+      <rect x="20" y="18" width="143" height="24" rx="12" fill="#27282B" stroke="#45464A"/>
+      <text x="91.5" y="35" text-anchor="middle" fill="#D1CEC7" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11" font-weight="700" letter-spacing="1.5">REAL REFERENCES</text>
+      <text x="20" y="75" fill="#F6F1E7" font-size="25" font-weight="700">img-gen-prompts</text>
+      <text x="20" y="103" fill="#C9C5BC" font-size="16">Which real images and source prompts can I inspect?</text>
+      <g transform="translate(20 116)" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11">
+        <text x="0" y="11" fill="#F4B95C">14,693 PROMPTS · 24,684 IMAGES</text>
+        <circle cx="227" cy="7" r="2" fill="#696B6F"/>
+        <text x="240" y="11" fill="#92908A">SOURCE · AUTHOR · GALLERY</text>
+      </g>
+      <g transform="translate(421 22)">
+        <rect width="55" height="42" rx="6" fill="#202124" stroke="#47484D"/>
+        <path d="M8 31 20 20l8 7 8-10 11 14" fill="none" stroke="#F4B95C" stroke-width="1.5"/>
+        <circle cx="15" cy="12" r="3" fill="#F4B95C" opacity=".8"/>
+        <path d="M2 59h51M2 68h38M2 77h45" stroke="#777A7F" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="4" cy="94" r="3" fill="#F4B95C"/>
+        <path d="M13 94h37" stroke="#5F6166" stroke-width="2" stroke-linecap="round"/>
+      </g>
+    </g>
+  </g>
+
+  <g transform="translate(444 365)" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">
+    <path d="M0 13h60" stroke="#4A4B4F" stroke-width="1.5"/>
+    <path d="m54 8 6 5-6 5" fill="none" stroke="#F4B95C" stroke-width="1.5"/>
+    <rect x="72" width="242" height="27" rx="13.5" fill="#111214" stroke="#343539"/>
+    <text x="193" y="18" text-anchor="middle" fill="#8E8C87" font-size="11" letter-spacing="1.4">USE ALONE · HAND OFF WHEN NEEDED</text>
+    <path d="M326 13h60" stroke="#4A4B4F" stroke-width="1.5"/>
+  </g>
+
+  <text x="1130" y="392" text-anchor="end" fill="#696B6F" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11">oip-visual-v2</text>
+</svg>

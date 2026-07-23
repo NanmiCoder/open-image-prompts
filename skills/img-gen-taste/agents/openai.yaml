@@ -1,0 +1,4 @@
+interface:
+  display_name: "Img Gen Taste"
+  short_description: "Choose a clear art direction for image generation."
+  default_prompt: "Use $img-gen-taste to turn my image idea into two or three visual directions, then build a creative spec after I choose."

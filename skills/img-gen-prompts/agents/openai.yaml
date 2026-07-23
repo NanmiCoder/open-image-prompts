@@ -1,0 +1,4 @@
+interface:
+  display_name: "Img Gen Prompts"
+  short_description: "Find traceable image references and source prompts."
+  default_prompt: "Use $img-gen-prompts to find real archive references for my brief, preserve every source prompt, and open a gallery for comparison."

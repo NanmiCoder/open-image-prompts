@@ -1,0 +1,15 @@
+{
+  "dataset_version": "2026-07-24",
+  "taxonomy_version": "oip-visual-v2",
+  "image_policy_version": "oip-cn-public-v1",
+  "selection": "generated allow decisions only",
+  "counts": {
+    "prompts": 14693,
+    "images": 4496,
+    "translations": 29386,
+    "prompt_labels": 170226,
+    "media_labels": 48682,
+    "taxonomy_labels": 185
+  },
+  "source_archive_sha256": "2f211d8695401706e3aeeb8cac4daeb881e8b60c1416b63c6a7ff8e6131a3c9b"
+}

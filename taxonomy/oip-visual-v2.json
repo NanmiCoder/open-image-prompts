@@ -1,0 +1,123 @@
+{
+  "version": "oip-visual-v2",
+  "name": {"en": "Open Image Prompts Visual Taxonomy v2", "zh": "Open Image Prompts 视觉标签体系 v2"},
+  "description": {"en": "Closed, bilingual retrieval vocabulary for prompts and rendered images.", "zh": "用于提示词与成图检索的封闭式双语词表。"},
+  "locales": ["en", "zh-Hans"],
+  "dimensions": [
+    {
+      "key": "subject_type",
+      "display": {"en": "Subject", "zh": "主体"},
+      "description": {"en": "What is visibly central to the prompt or image.", "zh": "提示词或画面中居于中心的主体。"},
+      "applies_to": ["prompt", "image"], "min": 1, "max": 3,
+      "labels": [
+        {"key":"portrait","display":{"en":"Portrait","zh":"人物肖像"}}, {"key":"beauty-closeup","display":{"en":"Beauty close-up","zh":"美妆特写"}}, {"key":"fashion-person","display":{"en":"Fashion person","zh":"时尚人物"}}, {"key":"couple","display":{"en":"Couple","zh":"情侣"}}, {"key":"group","display":{"en":"Group","zh":"群像"}}, {"key":"character","display":{"en":"Character","zh":"角色"}},
+        {"key":"product","display":{"en":"Product","zh":"产品"}}, {"key":"vehicle","display":{"en":"Vehicle","zh":"交通工具"}}, {"key":"food-drink","display":{"en":"Food and drink","zh":"食物与饮品"}}, {"key":"still-life","display":{"en":"Still life","zh":"静物"}}, {"key":"architecture-interior","display":{"en":"Architecture or interior","zh":"建筑或室内"}}, {"key":"landscape-nature","display":{"en":"Landscape or nature","zh":"风景或自然"}},
+        {"key":"city-street","display":{"en":"City or street","zh":"城市或街道"}}, {"key":"animal","display":{"en":"Animal","zh":"动物"}}, {"key":"graphic-design","display":{"en":"Graphic design","zh":"平面设计"}}, {"key":"ui-screen","display":{"en":"UI or screen","zh":"界面或屏幕"}}, {"key":"diagram-document","display":{"en":"Diagram or document","zh":"图表或文档"}}, {"key":"abstract","display":{"en":"Abstract","zh":"抽象"}}
+      ]
+    },
+    {
+      "key": "human_attributes",
+      "display": {"en": "Visible human details", "zh": "可见人物特征"},
+      "description": {"en": "Only non-sensitive, visibly depicted features. Do not infer identity or protected traits.", "zh": "仅标注非敏感且画面可见的特征；不得推断身份或受保护特征。"},
+      "applies_to": ["prompt", "image"], "min": 0, "max": 3,
+      "labels": [
+        {"key":"long-hair","display":{"en":"Long hair","zh":"长发"}}, {"key":"short-hair","display":{"en":"Short hair","zh":"短发"}}, {"key":"curly-hair","display":{"en":"Curly hair","zh":"卷发"}}, {"key":"facial-hair","display":{"en":"Facial hair","zh":"面部胡须"}}, {"key":"glasses","display":{"en":"Glasses","zh":"眼镜"}}, {"key":"sunglasses","display":{"en":"Sunglasses","zh":"太阳镜"}},
+        {"key":"headwear","display":{"en":"Headwear","zh":"头饰或帽子"}}, {"key":"makeup","display":{"en":"Makeup","zh":"妆容"}}, {"key":"jewelry","display":{"en":"Jewelry","zh":"珠宝配饰"}}, {"key":"tattoo-visible","display":{"en":"Visible tattoo","zh":"可见纹身"}}, {"key":"cybernetic-feature","display":{"en":"Cybernetic feature","zh":"赛博义体特征"}}, {"key":"mask","display":{"en":"Mask","zh":"面具"}}, {"key":"hands-prominent","display":{"en":"Prominent hands","zh":"突出手部"}}
+      ]
+    },
+    {
+      "key": "visual_style",
+      "display": {"en": "Visual style", "zh": "视觉风格"},
+      "description": {"en": "Rendering or art-direction style, not a free-form aesthetic caption.", "zh": "渲染或美术指导风格，不使用自由文本的审美描述。"},
+      "applies_to": ["prompt", "image"], "min": 1, "max": 2,
+      "labels": [
+        {"key":"photography","display":{"en":"Photography","zh":"摄影"}}, {"key":"editorial","display":{"en":"Editorial","zh":"编辑摄影"}}, {"key":"fashion","display":{"en":"Fashion","zh":"时尚摄影"}}, {"key":"lifestyle","display":{"en":"Lifestyle","zh":"生活方式"}}, {"key":"product-photography","display":{"en":"Product photography","zh":"产品摄影"}}, {"key":"cinematic","display":{"en":"Cinematic","zh":"电影感"}}, {"key":"film-vintage","display":{"en":"Film or vintage","zh":"胶片或复古"}}, {"key":"black-and-white","display":{"en":"Black and white","zh":"黑白"}},
+        {"key":"illustration","display":{"en":"Illustration","zh":"插画"}}, {"key":"digital-painting","display":{"en":"Digital painting","zh":"数字绘画"}}, {"key":"anime-manga","display":{"en":"Anime or manga","zh":"动漫或漫画"}}, {"key":"comic","display":{"en":"Comic","zh":"美漫"}}, {"key":"line-art","display":{"en":"Line art","zh":"线稿"}}, {"key":"watercolor","display":{"en":"Watercolor","zh":"水彩"}}, {"key":"oil-painting","display":{"en":"Oil painting","zh":"油画"}},
+        {"key":"3d-render","display":{"en":"3D render","zh":"3D 渲染"}}, {"key":"clay-render","display":{"en":"Clay render","zh":"黏土渲染"}}, {"key":"game-art","display":{"en":"Game art","zh":"游戏美术"}}, {"key":"graphic-design","display":{"en":"Graphic design","zh":"平面设计"}}, {"key":"pixel-art","display":{"en":"Pixel art","zh":"像素艺术"}}, {"key":"collage","display":{"en":"Collage","zh":"拼贴"}}, {"key":"surreal","display":{"en":"Surreal","zh":"超现实"}}, {"key":"retro","display":{"en":"Retro","zh":"复古"}}, {"key":"minimal","display":{"en":"Minimal","zh":"极简"}}, {"key":"abstract","display":{"en":"Abstract","zh":"抽象"}}
+      ]
+    },
+    {
+      "key": "composition",
+      "display": {"en": "Composition", "zh": "构图"},
+      "description": {"en": "Framing, viewpoint, and layout. At most one label from each group.", "zh": "取景、视角与布局；每个子组最多一个标签。"},
+      "applies_to": ["prompt", "image"], "min": 1, "max": 3,
+      "labels": [
+        {"key":"extreme-close-up","group":"framing","display":{"en":"Extreme close-up","zh":"极近特写"}}, {"key":"close-up","group":"framing","display":{"en":"Close-up","zh":"近景特写"}}, {"key":"medium-shot","group":"framing","display":{"en":"Medium shot","zh":"中景"}}, {"key":"full-body","group":"framing","display":{"en":"Full body","zh":"全身构图"}}, {"key":"wide-shot","group":"framing","display":{"en":"Wide shot","zh":"广角远景"}},
+        {"key":"eye-level","group":"viewpoint","display":{"en":"Eye level","zh":"平视"}}, {"key":"low-angle","group":"viewpoint","display":{"en":"Low angle","zh":"仰视"}}, {"key":"high-angle","group":"viewpoint","display":{"en":"High angle","zh":"俯视"}}, {"key":"aerial-view","group":"viewpoint","display":{"en":"Aerial view","zh":"航拍视角"}}, {"key":"overhead-flatlay","group":"viewpoint","display":{"en":"Overhead flat lay","zh":"俯拍平铺"}},
+        {"key":"centered","group":"layout","display":{"en":"Centered","zh":"居中"}}, {"key":"rule-of-thirds","group":"layout","display":{"en":"Rule of thirds","zh":"三分法"}}, {"key":"symmetry","group":"layout","display":{"en":"Symmetry","zh":"对称"}}, {"key":"negative-space","group":"layout","display":{"en":"Negative space","zh":"留白"}}, {"key":"dynamic-diagonal","group":"layout","display":{"en":"Dynamic diagonal","zh":"对角线动势"}}, {"key":"multi-panel","group":"layout","display":{"en":"Multi-panel","zh":"多分屏"}}
+      ]
+    },
+    {
+      "key": "camera_lens",
+      "display": {"en": "Camera and lens", "zh": "相机与镜头"},
+      "description": {"en": "Perspective, lens, focus, or exposure treatment.", "zh": "透视、镜头、焦点或曝光处理。"},
+      "applies_to": ["prompt", "image"], "min": 0, "max": 3,
+      "labels": [
+        {"key":"shallow-depth-of-field","display":{"en":"Shallow depth of field","zh":"浅景深"}}, {"key":"deep-focus","display":{"en":"Deep focus","zh":"深焦"}}, {"key":"wide-angle","display":{"en":"Wide angle","zh":"广角"}}, {"key":"telephoto","display":{"en":"Telephoto","zh":"长焦"}}, {"key":"macro","display":{"en":"Macro","zh":"微距"}}, {"key":"fisheye","display":{"en":"Fisheye","zh":"鱼眼"}}, {"key":"tilt-shift","display":{"en":"Tilt shift","zh":"移轴"}}, {"key":"orthographic","display":{"en":"Orthographic","zh":"正交视图"}}, {"key":"isometric","display":{"en":"Isometric","zh":"等距视图"}}, {"key":"35mm-film","display":{"en":"35mm film","zh":"35mm 胶片"}}, {"key":"50mm-standard","display":{"en":"50mm standard","zh":"50mm 标准镜头"}}, {"key":"85mm-portrait","display":{"en":"85mm portrait","zh":"85mm 人像镜头"}}, {"key":"motion-blur","display":{"en":"Motion blur","zh":"动态模糊"}}, {"key":"long-exposure","display":{"en":"Long exposure","zh":"长曝光"}}
+      ]
+    },
+    {
+      "key": "lighting",
+      "display": {"en": "Lighting", "zh": "光线"},
+      "description": {"en": "Light source, direction, or contrast treatment.", "zh": "光源、方向或明暗处理。"},
+      "applies_to": ["prompt", "image"], "min": 0, "max": 3,
+      "labels": [
+        {"key":"soft-light","display":{"en":"Soft light","zh":"柔光"}}, {"key":"hard-light","display":{"en":"Hard light","zh":"硬光"}}, {"key":"rim-light","display":{"en":"Rim light","zh":"轮廓光"}}, {"key":"backlit","display":{"en":"Backlit","zh":"逆光"}}, {"key":"side-lit","display":{"en":"Side lit","zh":"侧光"}}, {"key":"top-lit","display":{"en":"Top lit","zh":"顶光"}}, {"key":"golden-hour","display":{"en":"Golden hour","zh":"黄金时刻"}}, {"key":"blue-hour","display":{"en":"Blue hour","zh":"蓝调时刻"}}, {"key":"studio-light","display":{"en":"Studio light","zh":"影棚光"}}, {"key":"natural-daylight","display":{"en":"Natural daylight","zh":"自然日光"}}, {"key":"neon-light","display":{"en":"Neon light","zh":"霓虹光"}}, {"key":"candlelight","display":{"en":"Candlelight","zh":"烛光"}}, {"key":"volumetric-light","display":{"en":"Volumetric light","zh":"体积光"}}, {"key":"high-key","display":{"en":"High key","zh":"高调光"}}, {"key":"low-key","display":{"en":"Low key","zh":"低调光"}}
+      ]
+    },
+    {
+      "key": "color_palette",
+      "display": {"en": "Color palette", "zh": "色彩"},
+      "description": {"en": "Dominant palette or color relationship.", "zh": "主导色彩或配色关系。"},
+      "applies_to": ["prompt", "image"], "min": 0, "max": 2,
+      "labels": [
+        {"key":"monochrome","display":{"en":"Monochrome","zh":"单色"}}, {"key":"black-and-white","display":{"en":"Black and white","zh":"黑白"}}, {"key":"warm-tones","display":{"en":"Warm tones","zh":"暖色调"}}, {"key":"cool-tones","display":{"en":"Cool tones","zh":"冷色调"}}, {"key":"pastel","display":{"en":"Pastel","zh":"粉彩"}}, {"key":"muted","display":{"en":"Muted","zh":"低饱和"}}, {"key":"vibrant","display":{"en":"Vibrant","zh":"高饱和"}}, {"key":"high-contrast","display":{"en":"High contrast","zh":"高对比"}}, {"key":"earthy","display":{"en":"Earthy","zh":"大地色"}}, {"key":"neon","display":{"en":"Neon","zh":"霓虹色"}}, {"key":"complementary","display":{"en":"Complementary","zh":"互补色"}}, {"key":"analogous","display":{"en":"Analogous","zh":"类似色"}}, {"key":"dark-moody","display":{"en":"Dark and moody","zh":"暗调氛围"}}, {"key":"white-minimal","display":{"en":"White minimal","zh":"白色极简"}}
+      ]
+    },
+    {
+      "key": "mood",
+      "display": {"en": "Mood", "zh": "氛围"},
+      "description": {"en": "Overall emotional or atmospheric tone.", "zh": "整体情绪或氛围基调。"},
+      "applies_to": ["prompt", "image"], "min": 0, "max": 2,
+      "labels": [
+        {"key":"calm","display":{"en":"Calm","zh":"平静"}}, {"key":"cozy","display":{"en":"Cozy","zh":"温馨"}}, {"key":"joyful","display":{"en":"Joyful","zh":"欢快"}}, {"key":"romantic","display":{"en":"Romantic","zh":"浪漫"}}, {"key":"dreamy","display":{"en":"Dreamy","zh":"梦幻"}}, {"key":"mysterious","display":{"en":"Mysterious","zh":"神秘"}}, {"key":"dramatic","display":{"en":"Dramatic","zh":"戏剧性"}}, {"key":"melancholic","display":{"en":"Melancholic","zh":"忧郁"}}, {"key":"tense","display":{"en":"Tense","zh":"紧张"}}, {"key":"futuristic","display":{"en":"Futuristic","zh":"未来感"}}, {"key":"nostalgic","display":{"en":"Nostalgic","zh":"怀旧"}}, {"key":"playful","display":{"en":"Playful","zh":"俏皮"}}, {"key":"elegant","display":{"en":"Elegant","zh":"优雅"}}, {"key":"luxurious","display":{"en":"Luxurious","zh":"奢华"}}, {"key":"energetic","display":{"en":"Energetic","zh":"活力"}}
+      ]
+    },
+    {
+      "key": "scene",
+      "display": {"en": "Scene", "zh": "场景"},
+      "description": {"en": "Visible or explicitly requested setting.", "zh": "可见或明确要求的环境场景。"},
+      "applies_to": ["prompt", "image"], "min": 0, "max": 2,
+      "labels": [
+        {"key":"studio","display":{"en":"Studio","zh":"影棚"}}, {"key":"indoor-home","display":{"en":"Indoor home","zh":"家居室内"}}, {"key":"cafe-restaurant","display":{"en":"Cafe or restaurant","zh":"咖啡馆或餐厅"}}, {"key":"office-workspace","display":{"en":"Office or workspace","zh":"办公室或工作区"}}, {"key":"retail-store","display":{"en":"Retail store","zh":"零售店"}}, {"key":"street","display":{"en":"Street","zh":"街道"}}, {"key":"cityscape","display":{"en":"Cityscape","zh":"城市景观"}}, {"key":"alleyway","display":{"en":"Alleyway","zh":"小巷"}}, {"key":"rooftop","display":{"en":"Rooftop","zh":"屋顶"}}, {"key":"beach","display":{"en":"Beach","zh":"海滩"}}, {"key":"forest","display":{"en":"Forest","zh":"森林"}}, {"key":"mountain","display":{"en":"Mountain","zh":"山地"}}, {"key":"desert","display":{"en":"Desert","zh":"沙漠"}}, {"key":"garden","display":{"en":"Garden","zh":"花园"}}, {"key":"underwater","display":{"en":"Underwater","zh":"水下"}}, {"key":"outer-space","display":{"en":"Outer space","zh":"外太空"}}, {"key":"fantasy-world","display":{"en":"Fantasy world","zh":"奇幻世界"}}, {"key":"sci-fi-interior","display":{"en":"Sci-fi interior","zh":"科幻室内"}}, {"key":"historical-setting","display":{"en":"Historical setting","zh":"历史场景"}}, {"key":"sports","display":{"en":"Sports setting","zh":"运动场景"}}, {"key":"stage","display":{"en":"Stage","zh":"舞台"}}
+      ]
+    },
+    {
+      "key": "workflow",
+      "display": {"en": "Workflow", "zh": "生成工作流"},
+      "description": {"en": "Explicit generation or editing workflow, not a guessed model capability.", "zh": "明确写出的生成或编辑工作流，不猜测模型能力。"},
+      "applies_to": ["prompt"], "min": 0, "max": 3,
+      "labels": [
+        {"key":"text-to-image","display":{"en":"Text to image","zh":"文生图"}}, {"key":"image-to-image","display":{"en":"Image to image","zh":"图生图"}}, {"key":"reference-guided","display":{"en":"Reference guided","zh":"参考图引导"}}, {"key":"inpainting","display":{"en":"Inpainting","zh":"局部重绘"}}, {"key":"outpainting","display":{"en":"Outpainting","zh":"扩图"}}, {"key":"style-transfer","display":{"en":"Style transfer","zh":"风格迁移"}}, {"key":"character-consistency","display":{"en":"Character consistency","zh":"角色一致性"}}, {"key":"product-composite","display":{"en":"Product composite","zh":"产品合成"}}, {"key":"ui-mockup","display":{"en":"UI mockup","zh":"界面原型"}}, {"key":"vector-generation","display":{"en":"Vector generation","zh":"矢量生成"}}, {"key":"3d-rendering","display":{"en":"3D rendering","zh":"3D 渲染流程"}}, {"key":"photo-restoration","display":{"en":"Photo restoration","zh":"照片修复"}}
+      ]
+    },
+    {
+      "key": "usage",
+      "display": {"en": "Usage", "zh": "用途"},
+      "description": {"en": "Likely deliverable only when it is explicit in the source or visually unambiguous.", "zh": "仅在来源明确或视觉上无歧义时标注的交付用途。"},
+      "applies_to": ["prompt", "image"], "min": 0, "max": 2,
+      "labels": [
+        {"key":"ad-campaign","display":{"en":"Ad campaign","zh":"广告活动"}}, {"key":"social-post","display":{"en":"Social post","zh":"社交媒体内容"}}, {"key":"cover-art","display":{"en":"Cover art","zh":"封面设计"}}, {"key":"album-cover","display":{"en":"Album cover","zh":"专辑封面"}}, {"key":"poster","display":{"en":"Poster","zh":"海报"}}, {"key":"editorial","display":{"en":"Editorial","zh":"编辑配图"}}, {"key":"avatar","display":{"en":"Avatar","zh":"头像"}}, {"key":"product-listing","display":{"en":"Product listing","zh":"商品详情"}}, {"key":"ecommerce","display":{"en":"E-commerce","zh":"电商"}}, {"key":"brand-identity","display":{"en":"Brand identity","zh":"品牌视觉"}}, {"key":"presentation","display":{"en":"Presentation","zh":"演示文稿"}}, {"key":"game-asset","display":{"en":"Game asset","zh":"游戏资产"}}, {"key":"concept-art","display":{"en":"Concept art","zh":"概念设计"}}, {"key":"website-hero","display":{"en":"Website hero","zh":"网站主视觉"}}, {"key":"print-design","display":{"en":"Print design","zh":"印刷设计"}}
+      ]
+    },
+    {
+      "key": "quality_flags",
+      "display": {"en": "Objective flags", "zh": "客观标记"},
+      "description": {"en": "Objective visible retrieval flags. Safety ratings are stored separately.", "zh": "客观可见的检索标记；安全评级单独存储。"},
+      "applies_to": ["prompt", "image"], "min": 0, "max": 3,
+      "labels": [
+        {"key":"embedded-text","display":{"en":"Embedded text","zh":"画面文字"}}, {"key":"logo-watermark","display":{"en":"Logo or watermark","zh":"标志或水印"}}, {"key":"multi-panel-layout","display":{"en":"Multi-panel layout","zh":"多面板布局"}}, {"key":"screenshot-ui","display":{"en":"Screenshot or UI","zh":"截图或界面"}}, {"key":"typography-heavy","display":{"en":"Typography heavy","zh":"文字主导"}}, {"key":"visible-artifacts","display":{"en":"Visible artifacts","zh":"可见瑕疵"}}, {"key":"needs-review","display":{"en":"Needs review","zh":"需要复核"}}
+      ]
+    }
+  ]
+}

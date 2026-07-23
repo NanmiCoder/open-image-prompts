@@ -1,0 +1,219 @@
+{
+  "version": "oip-visual-v2",
+  "english_stopwords": [
+    "a", "an", "and", "for", "from", "image", "make", "of", "on", "photo",
+    "picture", "please", "the", "to", "with", "want", "create", "generate"
+  ],
+  "chinese_stopwords": ["一个", "一张", "一些", "图片", "照片", "生成", "制作", "帮我", "想要", "需要"],
+  "negative_aliases": {
+    "quality_flags:embedded-text": ["no text", "without text", "avoid text", "不带文字", "不要文字", "无文字", "没有文字", "无字", "纯画面", "不要画面文字"],
+    "quality_flags:typography-heavy": ["no typography", "without typography", "no text", "without text", "avoid text", "不带文字", "不要文字", "无文字", "没有文字", "无字", "纯画面", "不要排版", "无排版"],
+    "quality_flags:logo-watermark": ["no logo", "no watermark", "without logo", "without watermark", "不要标志", "不要水印", "无水印"],
+    "composition:multi-panel": ["no panels", "single panel only", "不要分屏", "单幅画面"],
+    "visual_style:black-and-white": ["not black and white", "no black and white", "不要黑白", "非黑白"]
+  },
+  "label_aliases": {
+    "subject_type:portrait": {"mode": "must", "aliases": ["portrait", "portrait photo", "人像", "人物肖像", "肖像"]},
+    "subject_type:beauty-closeup": {"mode": "must", "aliases": ["beauty closeup", "beauty close-up", "美妆特写", "美妆近景"]},
+    "subject_type:fashion-person": {"mode": "must", "aliases": ["fashion model", "fashion person", "fashion subject", "fashion editorial", "时尚人物", "时装人物", "时装模特", "时尚大片", "时装大片"]},
+    "subject_type:couple": {"mode": "must", "aliases": ["couple", "情侣", "双人情侣"]},
+    "subject_type:group": {"mode": "must", "aliases": ["group portrait", "group of people", "群像", "人物群像"]},
+    "subject_type:character": {"mode": "must", "aliases": ["character design", "character", "角色设计", "角色"]},
+    "subject_type:product": {"mode": "must", "aliases": ["product", "product shot", "产品", "商品", "产品图"]},
+    "subject_type:vehicle": {"mode": "must", "aliases": ["vehicle", "car", "automobile", "汽车", "车辆", "交通工具"]},
+    "subject_type:food-drink": {"mode": "must", "aliases": ["food photography", "food and drink", "food", "drink", "coffee", "美食", "食物", "饮品", "咖啡"]},
+    "subject_type:architecture-interior": {"mode": "must", "aliases": ["architecture", "interior design", "interior", "office space", "office workspace", "建筑", "室内设计", "室内", "办公空间"]},
+    "subject_type:landscape-nature": {"mode": "must", "aliases": ["landscape", "nature landscape", "japanese garden", "风景", "自然风景", "日式花园"]},
+    "subject_type:animal": {"mode": "must", "aliases": ["animal", "wildlife", "pet", "动物", "野生动物", "宠物"]},
+    "subject_type:graphic-design": {"mode": "must", "aliases": ["graphic design", "graphic cover", "graphic ad", "typography poster", "typography", "line-art vector", "平面设计", "平面封面", "平面广告", "线稿矢量图", "排版海报", "大字排版"]},
+    "subject_type:ui-screen": {"mode": "must", "aliases": ["ui screen", "user interface", "dashboard ui", "saas dashboard", "界面", "ui设计", "控制台ui", "控制台 ui", "saas 控制台"]},
+    "subject_type:diagram-document": {"mode": "must", "aliases": ["infographic", "diagram", "document graphic", "信息图", "图表", "文档"]},
+    "subject_type:abstract": {"mode": "must", "aliases": ["abstract graphic", "abstract image", "抽象平面", "抽象图形"]},
+    "subject_type:city-street": {"mode": "must", "aliases": ["city view", "city scene", "urban scene", "城市航拍", "城市远景", "城市景观", "城市里"]},
+    "human_attributes:facial-hair": {"mode": "must", "aliases": ["facial hair", "beard", "bearded", "胡须", "有胡须"]},
+    "human_attributes:tattoo-visible": {"mode": "must", "aliases": ["visible tattoo", "tattoo visible", "可见纹身"]},
+    "visual_style:photography": {"mode": "must", "aliases": ["photography", "photographic", "摄影", "摄影风格"]},
+    "visual_style:editorial": {"mode": "must", "aliases": ["editorial photography", "editorial", "编辑摄影", "杂志大片", "时尚大片", "时装大片"]},
+    "visual_style:fashion": {"mode": "must", "aliases": ["fashion photography", "fashion editorial", "时尚摄影", "时尚大片"]},
+    "visual_style:lifestyle": {"mode": "must", "aliases": ["lifestyle photography", "lifestyle", "生活方式摄影", "生活方式", "生活照"]},
+    "visual_style:product-photography": {"mode": "must", "aliases": ["product photography", "product shot", "commercial product shot", "产品摄影", "商业产品图", "产品图"]},
+    "visual_style:cinematic": {"mode": "must", "aliases": ["cinematic", "cinematic look", "电影感", "电影质感"]},
+    "visual_style:film-vintage": {"mode": "must", "aliases": ["vintage film", "vintage-film", "film look", "analog film", "胶片感", "胶片", "复古胶片"]},
+    "visual_style:black-and-white": {"mode": "must", "aliases": ["black and white photography", "black-and-white photography", "black-and-white", "noir", "黑白摄影", "黑白", "黑色电影"]},
+    "visual_style:illustration": {"mode": "must", "aliases": ["illustration", "illustrated", "插画", "插画风格"]},
+    "visual_style:digital-painting": {"mode": "must", "aliases": ["digital painting", "数字绘画"]},
+    "visual_style:anime-manga": {"mode": "must", "aliases": ["anime", "manga", "动漫", "漫画风"]},
+    "visual_style:comic": {"mode": "must", "aliases": ["comic book", "western comic", "美漫", "漫画书", "漫画"]},
+    "visual_style:line-art": {"mode": "must", "aliases": ["line art", "line-art", "line drawing", "线稿", "线描"]},
+    "visual_style:watercolor": {"mode": "must", "aliases": ["watercolor", "watercolour", "水彩", "水彩画"]},
+    "visual_style:oil-painting": {"mode": "must", "aliases": ["oil painting", "油画"]},
+    "visual_style:3d-render": {"mode": "must", "aliases": ["3d render", "3d rendering", "3d tech", "3d office", "3d ad", "3d", "3d渲染", "三维渲染", "3d 广告"]},
+    "visual_style:clay-render": {"mode": "must", "aliases": ["clay render", "clay style", "clay toy", "黏土渲染", "粘土风", "黏土", "粘土"]},
+    "visual_style:game-art": {"mode": "must", "aliases": ["game art", "游戏美术"]},
+    "visual_style:graphic-design": {"mode": "must", "aliases": ["graphic design style", "graphic cover", "graphic ad", "平面设计风格", "平面封面", "平面广告"]},
+    "visual_style:pixel-art": {"mode": "must", "aliases": ["pixel art", "pixel-art", "像素艺术", "像素风"]},
+    "visual_style:collage": {"mode": "must", "aliases": ["collage", "拼贴", "拼贴艺术"]},
+    "visual_style:surreal": {"mode": "must", "aliases": ["surreal", "surrealist", "超现实", "超现实主义"]},
+    "visual_style:retro": {"mode": "must", "aliases": ["retro", "复古风", "复古"]},
+    "visual_style:minimal": {"mode": "must", "aliases": ["minimalist", "minimal", "restrained", "understated", "极简主义", "极简", "克制"]},
+    "composition:extreme-close-up": {"mode": "should", "aliases": ["extreme closeup", "extreme close-up", "极近特写"]},
+    "composition:close-up": {"mode": "should", "aliases": ["closeup", "close-up", "close portrait", "近景特写", "近景", "特写"]},
+    "composition:full-body": {"mode": "should", "aliases": ["full body", "full-body", "全身构图", "全身"]},
+    "composition:wide-shot": {"mode": "should", "aliases": ["wide shot", "wide city scene", "广角远景", "远景"]},
+    "composition:low-angle": {"mode": "must", "aliases": ["low angle", "low-angle", "仰视", "仰拍"]},
+    "composition:aerial-view": {"mode": "must", "aliases": ["aerial view", "aerial city", "aerial", "航拍视角", "航拍"]},
+    "composition:overhead-flatlay": {"mode": "should", "aliases": ["flat lay", "flatlay", "overhead", "俯拍平铺", "俯拍", "平铺"]},
+    "camera_lens:shallow-depth-of-field": {"mode": "should", "aliases": ["shallow depth of field", "bokeh", "浅景深", "背景虚化"]},
+    "camera_lens:wide-angle": {"mode": "should", "aliases": ["wide angle", "wide-angle", "广角镜头", "广角"]},
+    "camera_lens:macro": {"mode": "should", "aliases": ["macro photography", "macro", "微距摄影", "微距"]},
+    "camera_lens:85mm-portrait": {"mode": "should", "aliases": ["85mm portrait", "85mm lens", "85mm人像", "85mm镜头"]},
+    "lighting:soft-light": {"mode": "should", "aliases": ["soft light", "soft lighting", "柔光", "柔和光线"]},
+    "lighting:rim-light": {"mode": "should", "aliases": ["rim light", "edge light", "轮廓光"]},
+    "lighting:golden-hour": {"mode": "should", "aliases": ["golden hour", "黄金时刻", "金色时刻"]},
+    "lighting:natural-daylight": {"mode": "should", "aliases": ["natural daylight", "daylight", "sunlight", "自然日光", "自然光", "阳光"]},
+    "lighting:neon-light": {"mode": "should", "aliases": ["neon light", "neon-lit", "neon", "霓虹灯光", "霓虹光", "霓虹"]},
+    "lighting:low-key": {"mode": "should", "aliases": ["low key lighting", "low-key lighting", "low-key", "低调光", "暗调布光"]},
+    "color_palette:black-and-white": {"mode": "should", "aliases": ["black and white", "black-and-white photography", "monochrome black", "黑白", "黑白摄影", "黑白色调"]},
+    "color_palette:warm-tones": {"mode": "should", "aliases": ["warm tones", "warm palette", "暖色调", "暖色"]},
+    "color_palette:pastel": {"mode": "should", "aliases": ["pastel colors", "pastel", "粉彩", "粉彩色"]},
+    "color_palette:neon": {"mode": "should", "aliases": ["neon colors", "neon palette", "neon abstract", "霓虹色", "霓虹配色", "霓虹抽象"]},
+    "color_palette:white-minimal": {"mode": "should", "aliases": ["white background", "white-background", "clean white", "白色极简", "白底"]},
+    "mood:dreamy": {"mode": "should", "aliases": ["dreamy", "梦幻", "梦幻感"]},
+    "mood:futuristic": {"mode": "should", "aliases": ["futuristic", "future aesthetic", "futuristic character", "未来感", "未来主义", "未来角色"]},
+    "mood:nostalgic": {"mode": "should", "aliases": ["nostalgic", "怀旧", "怀旧感"]},
+    "mood:playful": {"mode": "should", "aliases": ["playful", "clay toy", "toy", "俏皮", "趣味", "玩具"]},
+    "mood:elegant": {"mode": "should", "aliases": ["elegant", "优雅", "优雅感"]},
+    "mood:luxurious": {"mode": "should", "aliases": ["luxury", "luxurious", "奢华", "高级奢华"]},
+    "scene:cafe-restaurant": {"mode": "should", "aliases": ["cafe", "coffee shop", "restaurant", "咖啡馆", "餐厅"]},
+    "scene:street": {"mode": "should", "aliases": ["street", "street scene", "街道", "街头"]},
+    "scene:forest": {"mode": "should", "aliases": ["forest", "woodland", "森林", "林地"]},
+    "scene:outer-space": {"mode": "should", "aliases": ["outer space", "space scene", "外太空", "太空"]},
+    "scene:studio": {"mode": "should", "aliases": ["photo studio", "studio setting", "影棚", "摄影棚"]},
+    "scene:alleyway": {"mode": "must", "aliases": ["alley", "alleyway", "rainy alley", "小巷", "雨夜小巷"]},
+    "scene:indoor-home": {"mode": "must", "aliases": ["at home", "home interior", "indoor home", "家居", "家居室内"]},
+    "scene:sports": {"mode": "must", "aliases": ["sports scene", "group sports scene", "运动场景", "运动群像"]},
+    "scene:office-workspace": {"mode": "must", "aliases": ["office workspace", "office space", "办公空间", "办公室"]},
+    "lighting:high-key": {"mode": "must", "aliases": ["high key", "high-key", "bright lighting", "bright", "高调光", "高调", "明亮"]},
+    "lighting:studio-light": {"mode": "must", "aliases": ["studio light", "studio lighting", "high-key studio", "影棚光", "高调影棚"]},
+    "color_palette:dark-moody": {"mode": "must", "aliases": ["dark", "dark moody", "dark palette", "暗色", "暗调", "暗调氛围", "暗色调"]},
+    "composition:negative-space": {"mode": "must", "aliases": ["negative space", "copy space", "whitespace", "generous negative space", "留白", "文案留白"]},
+    "quality_flags:screenshot-ui": {"mode": "must", "aliases": ["ui screenshot", "ui screen", "screenshot", "界面截图", "截图"]},
+    "quality_flags:embedded-text": {"mode": "must", "aliases": ["embedded text", "packaging typography", "packaging text", "包装文字", "画面文字"]},
+    "quality_flags:typography-heavy": {"mode": "must", "aliases": ["large typography", "large type", "typography heavy", "大字排版", "文字主导"]},
+    "workflow:vector-generation": {"mode": "must", "aliases": ["vector generation", "vector", "矢量图", "矢量"]},
+    "camera_lens:isometric": {"mode": "must", "aliases": ["isometric", "isometric view", "等距视角", "等距视图"]},
+    "usage:ad-campaign": {"mode": "must", "aliases": ["ad campaign", "advertising campaign", "advertisement", "advertising", "commercial ad", "广告活动", "商业广告", "广告"]},
+    "usage:cover-art": {"mode": "must", "aliases": ["cover art", "book cover", "封面设计", "封面"]},
+    "usage:poster": {"mode": "must", "aliases": ["poster design", "poster", "海报设计", "海报"]},
+    "usage:product-listing": {"mode": "must", "aliases": ["product listing", "listing image", "商品详情图", "商品详情"]},
+    "usage:ecommerce": {"mode": "must", "aliases": ["ecommerce", "e-commerce", "电商", "电商图片"]},
+    "usage:website-hero": {"mode": "must", "aliases": ["website hero", "welcome page", "onboarding page", "网站主视觉", "欢迎页", "引导页"]}
+  },
+  "concepts": [
+    {
+      "id": "cyberpunk",
+      "aliases": ["cyberpunk", "赛博朋克"],
+      "should": ["mood:futuristic", "lighting:neon-light", "color_palette:neon"],
+      "lexical": ["cyberpunk", "赛博朋克"]
+    },
+    {
+      "id": "perfume",
+      "aliases": ["perfume", "fragrance bottle", "香水", "香氛"],
+      "must": ["subject_type:product", "visual_style:product-photography"],
+      "lexical": ["perfume", "fragrance", "香水", "香氛"],
+      "require_lexical": true
+    },
+    {
+      "id": "sneaker",
+      "aliases": ["sneaker", "sneakers", "sports shoe", "运动鞋", "球鞋"],
+      "should": ["subject_type:product", "visual_style:product-photography"],
+      "lexical": ["sneaker", "sports shoe", "运动鞋", "球鞋"],
+      "require_lexical": true
+    },
+    {
+      "id": "city-travel-poster",
+      "aliases": ["city travel poster", "retro city travel poster", "urban travel poster", "城市旅行海报", "复古城市旅行海报"],
+      "must": ["subject_type:city-street", "scene:cityscape", "usage:poster"],
+      "lexical": ["city", "urban", "城市", "travel", "tourism", "旅行", "旅游"],
+      "required_lexical_groups": [
+        ["city", "urban", "cityscape", "城市", "都市"],
+        ["travel", "tourism", "destination", "旅行", "旅游", "目的地"]
+      ]
+    },
+    {
+      "id": "japanese-garden",
+      "aliases": ["japanese garden", "japanese-style garden", "日式花园", "日本花园", "和风花园"],
+      "must": ["subject_type:landscape-nature", "scene:garden"],
+      "lexical": ["japanese", "japan", "日式", "日本", "和风"],
+      "required_lexical_groups": [["japanese", "japan", "日式", "日本", "和风"]]
+    },
+    {
+      "id": "rain-race-car",
+      "aliases": ["high-speed race car in the rain", "race car in the rain", "rainy race car", "高速雨天赛车", "雨天赛车", "雨中赛车"],
+      "must": ["subject_type:vehicle"],
+      "lexical": ["race car", "racing car", "racecar", "赛车", "竞速", "rain", "rainy", "雨天", "雨中", "high speed", "high-speed", "高速", "motion", "speed"],
+      "required_lexical_groups": [
+        ["race car", "racing car", "racecar", "racing vehicle", "赛车", "竞速车"],
+        ["rain", "rainy", "wet weather", "wet track", "雨天", "雨中", "雨景", "湿滑赛道"],
+        ["high speed", "high-speed", "speeding", "motion blur", "高速", "疾驰", "飞驰", "动态模糊"]
+      ]
+    },
+    {
+      "id": "jewelry-product",
+      "aliases": ["jewelry", "jewellery", "fine jewelry", "珠宝", "首饰", "珠宝首饰"],
+      "must": ["subject_type:product"],
+      "verified_tweet_ids": ["2062144815585009901", "2062144832471285937"],
+      "lexical": ["jewelry", "jewellery", "ring", "necklace", "bracelet", "earring", "pendant", "gemstone", "diamond", "珠宝", "首饰", "戒指", "项链", "手链", "耳环", "吊坠", "宝石", "钻石"],
+      "required_lexical_groups": [["jewelry", "jewellery", "ring", "necklace", "bracelet", "earring", "earrings", "pendant", "珠宝", "首饰", "戒指", "项链", "手链", "耳环", "吊坠"]]
+    },
+    {
+      "id": "tech-product",
+      "aliases": ["tech product", "tech-product", "technology product", "electronics product", "科技产品", "电子产品", "电子设备"],
+      "must": ["subject_type:product"],
+      "verified_tweet_ids": ["2062742091521003932"],
+      "lexical": ["device", "electronics", "headset", "headphones", "keyboard", "mouse", "laptop", "smartphone", "speaker", "gadget", "电子设备", "电子产品", "耳机", "键盘", "鼠标", "笔记本电脑", "手机", "音箱"],
+      "required_lexical_groups": [["device", "electronic device", "electronics", "headset", "headphones", "keyboard", "mouse", "laptop", "smartphone", "speaker", "gadget", "电子设备", "电子产品", "耳机", "键盘", "鼠标", "笔记本电脑", "手机", "音箱"]]
+    },
+    {
+      "id": "teal-orange-palette",
+      "aliases": ["teal-orange", "teal and orange", "cyan-orange", "cyan and orange", "青橙", "青色和橙色", "青色橙色"],
+      "must": ["color_palette:complementary"],
+      "required_image_tags": ["color_palette:complementary"],
+      "verified_tweet_ids": ["2035563035780333951"],
+      "verified_only": true,
+      "lexical": ["teal", "cyan", "orange", "青色", "青蓝", "蓝绿色", "橙色", "橙红"],
+      "required_lexical_groups": [
+        ["teal", "cyan", "青色", "青蓝", "蓝绿色"],
+        ["orange", "橙色", "橙红"]
+      ]
+    },
+    {
+      "id": "childrens-book",
+      "aliases": ["children's book", "children's-book", "childrens book", "childrens-book", "picture book", "儿童绘本", "绘本"],
+      "must": ["subject_type:character", "visual_style:illustration"],
+      "should": ["mood:playful"],
+      "required_image_tags": ["subject_type:character", "visual_style:illustration"],
+      "forbidden": ["quality_flags:screenshot-ui", "quality_flags:logo-watermark"],
+      "lexical": ["children book", "picture book", "儿童绘本", "绘本"]
+    },
+    {
+      "id": "child-friendly",
+      "aliases": ["for children", "child-friendly", "kids", "kid-friendly", "儿童", "少儿"],
+      "must": ["mood:playful"],
+      "lexical": ["children", "kids", "child-friendly", "儿童", "少儿"]
+    },
+    {
+      "id": "whale",
+      "aliases": ["whale", "whales", "鲸鱼"],
+      "must": ["subject_type:animal"],
+      "lexical": ["whale", "whales", "鲸鱼"],
+      "require_lexical": true
+    },
+    {
+      "id": "tattoo",
+      "aliases": ["tattoo design", "tattoo", "纹身图", "纹身"],
+      "lexical": ["tattoo", "tattoo design", "纹身", "纹身图"],
+      "require_lexical": true
+    }
+  ]
+}
