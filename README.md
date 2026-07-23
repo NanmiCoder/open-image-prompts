@@ -80,6 +80,17 @@ python3 skills/img-gen-prompts/scripts/oip.py search \
   --limit 5
 ```
 
+Search keeps exact matches in `results`. When exact coverage is sparse, a
+separate `related_results` channel may provide image-confirmed references that
+miss exactly one declared aesthetic preference. It never adds a vector
+database, model download, API key, or Python dependency. Run the labeled,
+bilingual 72-query regression benchmark (including visually reviewed related
+references) with:
+
+```bash
+npm run test:retrieval
+```
+
 On Windows, replace `python3` with `py -3` or use the Skill through a compatible Agent.
 
 ## Public data boundary

@@ -22,13 +22,22 @@ const session = normalizeGallerySession({
   derived_prompt: { en: 'English prompt', 'zh-Hans': '中文提示词' },
   references: [
     { tweet_id: '22', rank: 1, score: 0.9, match_reasons: ['霓虹光'] },
-    { tweet_id: '11', rank: 2, score: 0.8 },
+    {
+      tweet_id: '11',
+      rank: 2,
+      score: 0.8,
+      match_kind: 'related',
+      missing_constraints: ['lighting:neon'],
+    },
     { tweet_id: '22', rank: 3 },
     { tweet_id: 'missing', rank: 4 },
   ],
 }, sessionId)
 
 assert.deepEqual(session.references.map((entry) => entry.tweet_id), ['22', '11', 'missing'], 'reference order is authoritative and duplicate IDs are removed')
+assert.equal(session.references[0].match_kind, 'exact', 'legacy references default to exact')
+assert.equal(session.references[1].match_kind, 'related')
+assert.deepEqual(session.references[1].missing_constraints, ['lighting:neon'])
 assert.equal(localizedDerivedPrompt(session, 'zh'), '中文提示词')
 assert.equal(localizedDerivedPrompt(session, 'en'), 'English prompt')
 const promptRequest = new URL(galleryPromptApiUrl(session), 'http://localhost/')
@@ -43,6 +52,7 @@ const ordered = orderItemsForGallerySession([
 assert.deepEqual(ordered.items.map((item) => item.tweet_id), ['22', '11'], 'only requested references are shown in session order')
 assert.deepEqual(ordered.missingIds, ['missing'], 'missing references are reported, not replaced')
 assert.equal(ordered.items[0].prompt_text, 'original twenty-two', 'source prompt remains byte-for-byte unchanged')
+assert.equal(ordered.items[1].session_reference.match_kind, 'related', 'related status reaches the card rendering boundary')
 assert.equal(validGalleryFocus('22', session, ordered.items), '22')
 assert.equal(validGalleryFocus('missing', session, ordered.items), '')
 assert.equal(validGalleryFocus('33', session, ordered.items), '')

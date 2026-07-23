@@ -25,6 +25,8 @@ export default function PromptCard({ item, index, onSelect, onCopied }) {
   const hasVideo = Boolean(item.videos?.length)
   const tool = item.tool && item.tool !== 'None' ? item.tool : null
   const ratio = item._ratio && item._ratio > 0.2 && item._ratio < 5 ? item._ratio : null
+  const isRelated = item.session_reference?.match_kind === 'related'
+  const missingConstraints = (item.session_reference?.missing_constraints || []).slice(0, 2)
   const matchReasons = (item.session_reference?.match_reasons || [])
     .map(reasonLabel)
     .filter(Boolean)
@@ -92,6 +94,14 @@ export default function PromptCard({ item, index, onSelect, onCopied }) {
         </div>
 
         <div className="card-veil pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-abyss/95 via-abyss/75 to-transparent px-3.5 pb-3.5 pt-14">
+          {isRelated && (
+            <div className="mb-2 flex flex-wrap gap-1">
+              <span className="rounded-full border border-amber-300/45 bg-amber-950/65 px-2 py-0.5 font-mono text-[9px] text-amber-100">
+                {t('session.related')}
+                {missingConstraints.length > 0 && ` · ${t('session.missingConstraint', { value: missingConstraints.join(' · ') })}`}
+              </span>
+            </div>
+          )}
           {matchReasons.length > 0 && (
             <div className="mb-2 flex flex-wrap gap-1">
               {matchReasons.map((reason, reasonIndex) => (
