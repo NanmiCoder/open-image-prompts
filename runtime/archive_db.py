@@ -5,6 +5,7 @@ import gzip
 import os
 import shutil
 import sqlite3
+from contextlib import closing
 from pathlib import Path
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
@@ -50,7 +51,7 @@ def ensure_working_database(
     try:
         with gzip.open(archive_path, "rb") as source, temporary.open("wb") as target:
             shutil.copyfileobj(source, target, length=1024 * 1024)
-        with sqlite3.connect(temporary) as connection:
+        with closing(sqlite3.connect(temporary)) as connection:
             result = connection.execute("PRAGMA integrity_check").fetchone()
             if not result or result[0] != "ok":
                 raise RuntimeError("expanded SQLite archive failed integrity_check")
