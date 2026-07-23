@@ -127,8 +127,9 @@ def add_record_paths(repository: Path, record: object) -> None:
 def add_absolute_paths(repository: Path, payload: dict[str, Any]) -> dict[str, Any]:
     payload["repository_root"] = str(repository)
     add_record_paths(repository, payload.get("result"))
-    for record in payload.get("results") or []:
-        add_record_paths(repository, record)
+    for collection in ("results", "related_results"):
+        for record in payload.get(collection) or []:
+            add_record_paths(repository, record)
     return payload
 
 
@@ -514,7 +515,10 @@ def bounded_int(minimum: int, maximum: int):
 def create_gallery_session(repository: Path, args: argparse.Namespace) -> dict[str, Any]:
     search = run_library(repository, search_arguments(args))
     require_v2(search)
-    results = search.get("results") or []
+    results = [
+        *(search.get("results") or []),
+        *(search.get("related_results") or []),
+    ][:args.limit]
     if not results:
         raise SystemExit("No references matched the requested intent; gallery session was not created.")
     requested_lang = args.lang
@@ -531,6 +535,8 @@ def create_gallery_session(repository: Path, args: argparse.Namespace) -> dict[s
             "tweet_id": tweet_id,
             "rank": rank,
             "score": result.get("score"),
+            "match_kind": result.get("match_kind") or "exact",
+            "missing_constraints": result.get("missing_constraints") or [],
             "match_reasons": result.get("match_reasons") or [],
         })
     if not references:

@@ -40,6 +40,38 @@ from retrieval.engine import (
 )
 
 SCHEMA_VERSION = "oip-retrieval-v1"
+RELATED_RELAXABLE_DIMENSIONS = frozenset({
+    "composition",
+    "lighting",
+    "color_palette",
+    "mood",
+})
+RELATED_RELAXABLE_TAGS = frozenset({
+    "camera_lens:long-exposure",
+    "visual_style:minimal",
+})
+RELATED_IMAGE_EVIDENCE_DIMENSIONS = frozenset({
+    "subject_type",
+    "human_attributes",
+    "visual_style",
+    "composition",
+    "camera_lens",
+    "lighting",
+    "color_palette",
+    "mood",
+    "scene",
+})
+RELATED_BLOCKED_TAGS = frozenset({
+    "quality_flags:logo-watermark",
+    "quality_flags:multi-panel-layout",
+    "quality_flags:needs-review",
+    "quality_flags:screenshot-ui",
+    "quality_flags:visible-artifacts",
+})
+RELATED_TEXT_TAGS = frozenset({
+    "quality_flags:embedded-text",
+    "quality_flags:typography-heavy",
+})
 
 
 def json_array(value: object) -> list[str]:
@@ -636,6 +668,23 @@ def relaxation_plan(intent: SearchIntent) -> list[str]:
     return []
 
 
+def related_relaxation_plan(intent: SearchIntent) -> list[str]:
+    """Return single-facet relaxations that are safe to expose as related references.
+
+    The exact result channel remains fail-closed. Related references may omit one
+    aesthetic facet, but never a locked tag, subject, usage, scene, workflow, or
+    negative constraint.
+    """
+    return [
+        item.tag
+        for item in intent.must_tags
+        if (
+            item.tag in RELATED_RELAXABLE_TAGS
+            or item.tag.partition(":")[0] in RELATED_RELAXABLE_DIMENSIONS
+        )
+    ]
+
+
 def intent_with_relaxations(intent: SearchIntent, relaxed: list[str]) -> SearchIntent:
     relaxed_set = set(relaxed)
     moved = [item for item in intent.must_tags if item.tag in relaxed_set]
@@ -705,6 +754,10 @@ def search_hits(
         item["relaxation_level"] = len(relaxed)
         item["relaxed_constraints"] = list(relaxed)
         item["_tag_ids"] = {tag["id"] for tag in prompt_tags}
+        item["_tag_scopes"] = {
+            tag["id"]: set(tag.get("scopes") or [tag.get("scope", "prompt")])
+            for tag in prompt_tags
+        }
         item["_prompt_key"] = re.sub(r"\s+", " ", str(prompt["prompt_text"] or "").casefold()).strip()[:1000]
         hits.append(item)
     hits.sort(key=lambda item: (-item["score"], item["tweet_id"]), reverse=False)
@@ -751,8 +804,51 @@ def diversify_tiers(
         for rank, item in enumerate(chosen, 1):
             item["rank"] = rank
             item.pop("_tag_ids", None)
+            item.pop("_tag_scopes", None)
             item.pop("_prompt_key", None)
     return chosen
+
+
+def related_candidate_allowed(intent: SearchIntent, item: dict[str, Any]) -> bool:
+    """Require visual evidence and reject obvious gallery-hostile near matches."""
+    tag_ids = set(item.get("_tag_ids") or ())
+    tag_scopes = item.get("_tag_scopes") or {}
+    requested = {
+        constraint.tag
+        for constraint in [*intent.locked_tags, *intent.must_tags, *intent.should_tags]
+    }
+    if RELATED_BLOCKED_TAGS & tag_ids:
+        return False
+    if "subject_type:diagram-document" in tag_ids and "subject_type:diagram-document" not in requested:
+        return False
+    if "subject_type:ui-screen" in tag_ids and "subject_type:ui-screen" not in requested:
+        return False
+    if RELATED_TEXT_TAGS & tag_ids and not (RELATED_TEXT_TAGS & requested):
+        return False
+    for constraint in [*intent.locked_tags, *intent.must_tags]:
+        if (
+            constraint.tag.partition(":")[0] in RELATED_IMAGE_EVIDENCE_DIMENSIONS
+            and "image" not in set(tag_scopes.get(constraint.tag) or ())
+        ):
+            return False
+    return True
+
+
+def merged_related_hits(tiers: list[list[dict[str, Any]]], exact_ids: set[str]) -> list[dict[str, Any]]:
+    """Merge independent one-facet tiers without favoring config order."""
+    best_by_id: dict[str, dict[str, Any]] = {}
+    for hits in tiers:
+        for item in hits:
+            tweet_id = str(item["tweet_id"])
+            if tweet_id in exact_ids:
+                continue
+            existing = best_by_id.get(tweet_id)
+            if existing is None or float(item["score"]) > float(existing["score"]):
+                best_by_id[tweet_id] = item
+    return sorted(
+        best_by_id.values(),
+        key=lambda item: (-float(item["score"]), str(item["tweet_id"])),
+    )
 
 
 def run_search(conn: sqlite3.Connection, args: argparse.Namespace) -> dict[str, Any]:
@@ -788,9 +884,41 @@ def run_search(conn: sqlite3.Connection, args: argparse.Namespace) -> dict[str, 
     exact_match_count = len(tiers[0]) if tiers else 0
     total_matches = len({item["tweet_id"] for tier in tiers for item in tier})
     selected = diversify_tiers(tiers, args.limit)
+    for item in selected:
+        item["match_kind"] = "exact"
+        item["missing_constraints"] = []
     used_relaxations = list(dict.fromkeys(
         constraint for item in selected for constraint in item.get("relaxed_constraints", [])
     ))
+    related_limit = max(0, args.limit - len(selected))
+    related_tiers: list[list[dict[str, Any]]] = []
+    related_tier_summaries: list[dict[str, Any]] = []
+    if related_limit:
+        exact_ids = {str(item["tweet_id"]) for item in selected}
+        for constraint in related_relaxation_plan(intent):
+            tier_intent = intent_with_relaxations(intent, [constraint])
+            related_hits, version = search_hits(
+                conn, tier_intent, fts_scores=fts_scores, require_images=require_images,
+                author_filter=author_filter, tool_filter=tool_filter,
+                max_prompt_chars=args.max_prompt_chars, max_tags=args.max_tags,
+                relaxed=[constraint],
+            )
+            related_hits = [
+                item for item in related_hits
+                if related_candidate_allowed(tier_intent, item)
+            ]
+            related_tiers.append(related_hits)
+            related_tier_summaries.append({
+                "relaxed_constraint": constraint,
+                "match_count": len(related_hits),
+            })
+        related_pool = merged_related_hits(related_tiers, exact_ids)
+        related_selected = diversify_tiers([related_pool], related_limit)
+    else:
+        related_selected = []
+    for item in related_selected:
+        item["match_kind"] = "related"
+        item["missing_constraints"] = list(item.get("relaxed_constraints") or [])
     return {
         "schema_version": SCHEMA_VERSION,
         "query": args.query,
@@ -803,6 +931,12 @@ def run_search(conn: sqlite3.Connection, args: argparse.Namespace) -> dict[str, 
         "exact_match_count": exact_match_count,
         "total_matches": total_matches,
         "results": selected,
+        "related_count": len(related_selected),
+        "related_total_matches": len({
+            item["tweet_id"] for tier in related_tiers for item in tier
+        }),
+        "related_search_tiers": related_tier_summaries,
+        "related_results": related_selected,
     }
 
 

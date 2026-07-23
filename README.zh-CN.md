@@ -72,6 +72,15 @@ npm run status
 
 准备完成后会返回 `"active_taxonomy_version": "oip-visual-v2"` 和 `"ready": true`。
 
+搜索结果中的 `results` 始终是严格匹配。如果严格结果不足，独立的
+`related_results` 会补充“仅缺少一个已声明审美偏好”的图片侧确认参考，
+不会把它冒充严格命中。这项能力不增加向量数据库、模型下载、API Key 或
+Python 依赖。可以运行包含相关图片人工视觉判定的 72 条中英双语标注回归基准：
+
+```bash
+npm run test:retrieval
+```
+
 ## 公开数据边界
 
 公开 DB 只保留产品运行所需数据：

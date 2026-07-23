@@ -46,6 +46,10 @@ export function normalizeGallerySession(payload, requestedId = '') {
       tweet_id: clean(reference?.tweet_id),
       rank: Number.isFinite(Number(reference?.rank)) ? Number(reference.rank) : index + 1,
       score: Number.isFinite(Number(reference?.score)) ? Number(reference.score) : null,
+      match_kind: reference?.match_kind === 'related' ? 'related' : 'exact',
+      missing_constraints: Array.isArray(reference?.missing_constraints)
+        ? reference.missing_constraints.map(clean).filter(Boolean)
+        : [],
       match_reasons: Array.isArray(reference?.match_reasons)
         ? reference.match_reasons.map(normalizeMatchReason).filter(Boolean)
         : [],

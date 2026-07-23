@@ -43,19 +43,29 @@ or negative constraints. Inspect `parsed_intent`, `match_reasons`, tags, and
 Read `references/retrieval-contract.md` when interpreting constraints or an
 empty result.
 
+Treat `results` as exact matches. `related_results` is a separate fallback
+channel that may omit exactly one declared aesthetic constraint. Never present
+a related reference as an exact match: disclose its `missing_constraints` and
+recommend only the visual decisions it actually demonstrates. Related
+references are already restricted to image-confirmed visual evidence and
+exclude unrequested screenshots, document graphics, heavy text, multi-panel
+layouts, and watermarks.
+
 For each recommendation return:
 
 - stable ID, author, and source URL;
 - representative image path;
+- whether the match is `exact` or `related`;
+- any declared `missing_constraints`;
 - unchanged `source_prompt`;
 - two or three meaningful match reasons;
 - what visual decision is reusable and what should not be copied.
 
 Translations and derived prompts are aids, never source prompts. If no relevant
-result exists, report the corpus gap instead of inventing provenance. Retry at
-most once after removing one non-core mood, lighting, or palette preference;
-disclose the change and never relax the subject, use, explicit style, user
-invariants, or forbidden constraints.
+result exists in either channel, report the corpus gap instead of inventing
+provenance. The tool already performs the only allowed one-facet fallback;
+never manually relax the subject, use, explicit style, scene, user invariants,
+or forbidden constraints.
 
 Some archive records contain commentary or post copy rather than an executable
 generation prompt. Label that distinction clearly and do not present such text
