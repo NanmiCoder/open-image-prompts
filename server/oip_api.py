@@ -436,4 +436,8 @@ if __name__ == "__main__":
     print("Preparing gallery filters ...", flush=True)
     prewarm_catalog()
     print(f"Open Image Prompts API listening on http://{API_HOST}:{API_PORT}", flush=True)
-    GalleryHTTPServer((API_HOST, API_PORT), Handler).serve_forever()
+    with GalleryHTTPServer((API_HOST, API_PORT), Handler) as server:
+        try:
+            server.serve_forever()
+        except KeyboardInterrupt:
+            pass

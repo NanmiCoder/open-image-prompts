@@ -1,0 +1,94 @@
+@echo off
+setlocal EnableExtensions DisableDelayedExpansion
+pushd "%~dp0"
+if errorlevel 1 (
+  echo.
+  echo Error: Could not open the project directory "%~dp0".
+  exit /b 1
+)
+
+echo.
+echo [1/4] Preparing Git LFS data...
+where git >nul 2>nul
+if errorlevel 1 (
+  echo.
+  echo Error: Git is required: https://git-scm.com/downloads
+  exit /b 1
+)
+git lfs version >nul 2>nul
+if errorlevel 1 (
+  echo.
+  echo Error: Git LFS is required: https://git-lfs.com/
+  exit /b 1
+)
+git lfs install --local
+if errorlevel 1 exit /b 1
+git lfs pull
+if errorlevel 1 exit /b 1
+if not exist "%CD%\db\prompts.db.gz" (
+  echo.
+  echo Error: The public database is missing. Clone this repository with Git LFS enabled.
+  exit /b 1
+)
+for %%F in ("%CD%\db\prompts.db.gz") do if %%~zF LSS 1024 (
+  echo.
+  echo Error: The public database is still a Git LFS pointer. Run git lfs pull and try again.
+  exit /b 1
+)
+
+echo.
+echo [2/4] Preparing Python with uv...
+set "UV_EXE="
+for /f "delims=" %%I in ('where uv 2^>nul') do if not defined UV_EXE set "UV_EXE=%%I"
+if not defined UV_EXE (
+  where powershell >nul 2>nul
+  if errorlevel 1 (
+    echo.
+    echo Error: PowerShell is required to install uv: https://docs.astral.sh/uv/getting-started/installation/
+    exit /b 1
+  )
+  set "UV_INSTALL_DIR=%CD%\.oip\tools\uv"
+  set "UV_NO_MODIFY_PATH=1"
+  powershell -NoLogo -NoProfile -ExecutionPolicy Bypass -Command "$ErrorActionPreference = 'Stop'; irm https://astral.sh/uv/install.ps1 | iex"
+  if errorlevel 1 exit /b 1
+  if exist "%UV_INSTALL_DIR%\uv.exe" set "UV_EXE=%UV_INSTALL_DIR%\uv.exe"
+)
+if not defined UV_EXE (
+  echo.
+  echo Error: uv was installed but its executable could not be found.
+  exit /b 1
+)
+"%UV_EXE%" sync --locked
+if errorlevel 1 exit /b 1
+
+echo.
+echo [3/4] Installing frontend dependencies...
+where node >nul 2>nul
+if errorlevel 1 (
+  echo.
+  echo Error: Node.js 20.19+ or 22.12+ is required: https://nodejs.org/
+  exit /b 1
+)
+where npm >nul 2>nul
+if errorlevel 1 (
+  echo.
+  echo Error: npm is required and normally ships with Node.js: https://nodejs.org/
+  exit /b 1
+)
+node -e "const [major, minor] = process.versions.node.split('.').map(Number); if (!((major === 20 && minor >= 19) || (major === 22 && minor >= 12) || major > 22)) { console.error('Node.js ' + process.versions.node + ' is unsupported. Install Node.js 20.19+ or 22.12+.'); process.exit(1) }"
+if errorlevel 1 exit /b 1
+call npm.cmd --prefix web ci
+if errorlevel 1 exit /b 1
+
+echo.
+echo [4/4] Starting Open Image Prompts...
+set "OIP_PYTHON=%CD%\.venv\Scripts\python.exe"
+if not exist "%OIP_PYTHON%" (
+  echo.
+  echo Error: uv did not create the expected Python environment at "%OIP_PYTHON%"
+  exit /b 1
+)
+node web\scripts\with_api.mjs dev
+set "OIP_EXIT_CODE=%ERRORLEVEL%"
+popd
+endlocal & exit /b %OIP_EXIT_CODE%
