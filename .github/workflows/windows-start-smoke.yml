@@ -68,8 +68,8 @@ jobs:
               throw "The application did not become ready within 180 seconds"
             }
 
-            $home = Invoke-WebRequest -UseBasicParsing "http://127.0.0.1:4173/"
-            if ($home.StatusCode -ne 200 -or $home.Content -notmatch "Open Image Prompts") {
+            $homeResponse = Invoke-WebRequest -UseBasicParsing "http://127.0.0.1:4173/"
+            if ($homeResponse.StatusCode -ne 200 -or $homeResponse.Content -notmatch "Open Image Prompts") {
               throw "The frontend did not return the expected page"
             }
 
