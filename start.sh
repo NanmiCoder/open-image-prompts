@@ -19,11 +19,13 @@ DB_SIZE=$(wc -c < "$ROOT_DIR/db/prompts.db.gz")
 [ "$DB_SIZE" -ge 1024 ] || fail "The public database is still a Git LFS pointer. Run git lfs pull and try again."
 
 printf '\n[2/4] Preparing Python with uv...\n'
+UV_INSTALL_DIR="$ROOT_DIR/.oip/tools/uv"
 if command -v uv >/dev/null 2>&1; then
   UV_BIN=$(command -v uv)
+elif [ -x "$UV_INSTALL_DIR/uv" ]; then
+  UV_BIN="$UV_INSTALL_DIR/uv"
 else
   command -v curl >/dev/null 2>&1 || fail "curl is required to install uv: https://docs.astral.sh/uv/getting-started/installation/"
-  UV_INSTALL_DIR="$ROOT_DIR/.oip/tools/uv"
   mkdir -p "$UV_INSTALL_DIR"
   curl -LsSf https://astral.sh/uv/install.sh \
     | env UV_INSTALL_DIR="$UV_INSTALL_DIR" UV_NO_MODIFY_PATH=1 sh
