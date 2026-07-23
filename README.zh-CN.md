@@ -15,33 +15,30 @@
 
 公开运行时快照包含 **14,693 条来源提示词**、**4,496 张已通过审核的本地图片**、**29,386 条翻译**、**170,226 条有效 v2 提示词标签**和 **185 个封闭视觉标签**。打标模型、回填工具、供应商配置、测试批次、错误日志以及其他打标过程记录均不在公开仓库中。
 
-## 本地启动
+## 一键启动
 
-环境要求：
-
-- Git 和 [Git LFS](https://git-lfs.com/)
-- Node.js `^20.19.0 || >=22.12.0`
-- Python 3.10+
-
-Windows、macOS 和 Linux 使用同一组命令：
+先安装[带 Git LFS 的 Git](https://git-lfs.com/)和 [Node.js](https://nodejs.org/) 20.19+ 或 22.12+，然后克隆仓库：
 
 ```bash
-git lfs install
 git clone https://github.com/NanmiCoder/open-image-prompts.git
 cd open-image-prompts
-npm run setup
-npm run dev
 ```
 
-打开终端输出的本地地址。首次启动会把压缩 SQLite 解压到已忽略的 `.oip/runtime/`，启动仅监听本机回环地址的只读 API，然后启动 Vite 前端。
-
-构建并预览生产前端：
+macOS 或 Linux：
 
 ```bash
-npm run preview
+./start.sh
 ```
 
-跨平台启动器会在 Windows 自动寻找 `py -3` 或 `python`，在 macOS/Linux 自动寻找 `python3` 或 `python`。如 Python 使用自定义命令，可设置 `OIP_PYTHON`。
+Windows：
+
+```bat
+start.bat
+```
+
+也可以直接在文件管理器中双击 `start.bat`。启动脚本会拉取 Git LFS 数据、按需安装 [uv](https://docs.astral.sh/uv/)、创建兼容的 Python 环境、安装前端依赖，并同时启动前后端。打开终端输出的本地地址即可。
+
+首次启动会把压缩 SQLite 解压到已忽略的 `.oip/runtime/`；后续启动会复用 Python 环境，并按锁文件刷新依赖。
 
 ## 使用 Docker
 
@@ -92,6 +89,8 @@ npm run status
 ## 验证
 
 ```bash
+uv sync --locked
+npm --prefix web ci
 npm test
 npm run lint
 npm run build

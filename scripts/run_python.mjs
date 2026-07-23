@@ -1,25 +1,34 @@
 #!/usr/bin/env node
 import { spawn, spawnSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
-import { resolve } from 'node:path'
+import { dirname, resolve } from 'node:path'
+
+const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 
 export function pythonCommand() {
   const configured = process.env.OIP_PYTHON
+  const projectPython = process.platform === 'win32'
+    ? resolve(repositoryRoot, '.venv', 'Scripts', 'python.exe')
+    : resolve(repositoryRoot, '.venv', 'bin', 'python')
   const candidates = configured
     ? [[configured, []]]
     : process.platform === 'win32'
-      ? [['py', ['-3']], ['python', []], ['python3', []]]
-      : [['python3', []], ['python', []]]
+      ? [[projectPython, []], ['py', ['-3']], ['python', []], ['python3', []]]
+      : [[projectPython, []], ['python3', []], ['python', []]]
 
   for (const [command, prefix] of candidates) {
-    const probe = spawnSync(command, [...prefix, '--version'], {
+    const probe = spawnSync(command, [
+      ...prefix,
+      '-c',
+      'import sys; raise SystemExit(0 if sys.version_info >= (3, 10) else 1)',
+    ], {
       encoding: 'utf8',
       windowsHide: true,
     })
     if (!probe.error && probe.status === 0) return { command, prefix }
   }
   throw new Error(
-    'Python 3.10+ was not found. Install Python or set OIP_PYTHON to its executable.',
+    'Python 3.10+ was not found. Run start.sh/start.bat first or set OIP_PYTHON to its executable.',
   )
 }
 

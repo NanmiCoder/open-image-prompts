@@ -1,0 +1,103 @@
+name: Windows one-click start smoke
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - .github/workflows/windows-start-smoke.yml
+      - pyproject.toml
+      - uv.lock
+      - start.bat
+      - scripts/run_python.mjs
+      - server/oip_api.py
+      - web/**
+
+permissions:
+  contents: read
+
+jobs:
+  windows-start:
+    runs-on: windows-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: Open Image Prompts!
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+          path: Open Image Prompts!
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: Open Image Prompts!/web/package-lock.json
+
+      - name: Run start.bat and verify the application
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          $env:OIP_WEB_HOST = "127.0.0.1"
+          $env:OIP_WEB_PORT = "4173"
+          $process = Start-Process `
+            -FilePath "cmd.exe" `
+            -ArgumentList "/d", "/c", "start.bat" `
+            -PassThru `
+            -RedirectStandardOutput "start-stdout.log" `
+            -RedirectStandardError "start-stderr.log"
+
+          try {
+            $ready = $false
+            for ($attempt = 0; $attempt -lt 180; $attempt++) {
+              if ($process.HasExited) {
+                throw "start.bat exited before the application became ready (exit $($process.ExitCode))"
+              }
+              try {
+                $health = Invoke-RestMethod "http://127.0.0.1:4173/health"
+                if ($health.ok -eq $true) {
+                  $ready = $true
+                  break
+                }
+              } catch {
+                Start-Sleep -Seconds 1
+              }
+            }
+            if (-not $ready) {
+              throw "The application did not become ready within 180 seconds"
+            }
+
+            $homeResponse = Invoke-WebRequest -UseBasicParsing "http://127.0.0.1:4173/"
+            if ($homeResponse.StatusCode -ne 200 -or $homeResponse.Content -notmatch "Open Image Prompts") {
+              throw "The frontend did not return the expected page"
+            }
+
+            $catalog = Invoke-RestMethod "http://127.0.0.1:4173/api/catalog"
+            if ($catalog.tools.Count -lt 1 -or $catalog.tags.Count -lt 1) {
+              throw "The catalog response is empty"
+            }
+
+            $prompts = Invoke-RestMethod "http://127.0.0.1:4173/api/prompts?limit=1"
+            if ($prompts.items.Count -ne 1) {
+              throw "The prompt API did not return a record"
+            }
+
+            $imagePath = $prompts.items[0].images[0].local
+            if ($imagePath) {
+              $image = Invoke-WebRequest -UseBasicParsing ("http://127.0.0.1:4173/" + $imagePath.TrimStart("/"))
+              if ($image.StatusCode -ne 200 -or $image.Headers["Content-Type"] -notmatch "^image/") {
+                throw "A gallery image could not be served"
+              }
+            }
+          } finally {
+            if (-not $process.HasExited) {
+              taskkill /PID $process.Id /T /F | Out-Null
+            }
+            if (Test-Path "start-stdout.log") {
+              Get-Content "start-stdout.log"
+            }
+            if (Test-Path "start-stderr.log") {
+              Get-Content "start-stderr.log"
+            }
+          }

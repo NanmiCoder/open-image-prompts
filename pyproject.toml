@@ -1,0 +1,9 @@
+[project]
+name = "open-image-prompts"
+version = "0.1.0"
+description = "Local read-only API and retrieval runtime for Open Image Prompts."
+requires-python = ">=3.10"
+dependencies = []
+
+[tool.uv]
+package = false

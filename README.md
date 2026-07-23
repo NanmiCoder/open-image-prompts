@@ -15,33 +15,30 @@ An open, local-first visual prompt archive with two installable Agent Skills:
 
 The public runtime snapshot contains **14,693 source prompts**, **4,496 approved local images**, **29,386 translations**, **170,226 active v2 prompt labels**, and a closed taxonomy of **185 visual labels**. Labeling models, backfill tools, provider configuration, test runs, error logs, and other labeling-process records are not included.
 
-## Start locally
+## One-click start
 
-Requirements:
-
-- Git and [Git LFS](https://git-lfs.com/)
-- Node.js `^20.19.0 || >=22.12.0`
-- Python 3.10+
-
-The same commands work on Windows, macOS, and Linux:
+Install [Git with Git LFS](https://git-lfs.com/) and [Node.js](https://nodejs.org/) 20.19+ or 22.12+, then clone the repository:
 
 ```bash
-git lfs install
 git clone https://github.com/NanmiCoder/open-image-prompts.git
 cd open-image-prompts
-npm run setup
-npm run dev
 ```
 
-Open the local URL printed in the terminal. The first start expands the compressed SQLite archive into the ignored `.oip/runtime/` directory, launches a loopback-only read-only API, and starts the Vite frontend.
-
-To build and preview the production frontend locally:
+Start on macOS or Linux:
 
 ```bash
-npm run preview
+./start.sh
 ```
 
-The launcher automatically finds `py -3` or `python` on Windows and `python3` or `python` on macOS/Linux. Set `OIP_PYTHON` if Python is installed under a custom executable name.
+Start on Windows:
+
+```bat
+start.bat
+```
+
+You can also double-click `start.bat` in File Explorer. The launcher pulls the Git LFS data, installs [uv](https://docs.astral.sh/uv/) when needed, creates a compatible Python environment, installs the frontend packages, and starts both services. Open the local URL printed in the terminal.
+
+The first start expands the compressed SQLite archive into the ignored `.oip/runtime/` directory. Later starts reuse the Python environment while refreshing locked dependencies.
 
 ## Run with Docker
 
@@ -102,6 +99,8 @@ See [DATASET.md](./DATASET.md), [DATA_LICENSE.md](./DATA_LICENSE.md), and the ma
 ## Validate a checkout
 
 ```bash
+uv sync --locked
+npm --prefix web ci
 npm test
 npm run lint
 npm run build
