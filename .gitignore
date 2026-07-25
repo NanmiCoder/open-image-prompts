@@ -12,3 +12,7 @@ db/*.db-wal
 db/*.db-shm
 .oip/
 db/*.lock
+
+# Dataset assets come from GitHub Releases via scripts/fetch_dataset.py
+images/
+db/prompts.db.gz

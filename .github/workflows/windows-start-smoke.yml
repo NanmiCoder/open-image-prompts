@@ -26,7 +26,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          lfs: true
           path: Open Image Prompts!
 
       - uses: actions/setup-node@v4
@@ -41,6 +40,9 @@ jobs:
           $ErrorActionPreference = "Stop"
           $env:OIP_WEB_HOST = "127.0.0.1"
           $env:OIP_WEB_PORT = "4173"
+          # CI verifies the database path only; image packs total several GB
+          # and the gallery falls back to source URLs when files are absent.
+          $env:OIP_FETCH_SKIP_IMAGES = "1"
           $process = Start-Process `
             -FilePath "cmd.exe" `
             -ArgumentList "/d", "/c", "start.bat" `
@@ -84,7 +86,7 @@ jobs:
             }
 
             $imagePath = $prompts.items[0].images[0].local
-            if ($imagePath) {
+            if ($imagePath -and -not $env:OIP_FETCH_SKIP_IMAGES) {
               $image = Invoke-WebRequest -UseBasicParsing ("http://127.0.0.1:4173/" + $imagePath.TrimStart("/"))
               if ($image.StatusCode -ne 200 -or $image.Headers["Content-Type"] -notmatch "^image/") {
                 throw "A gallery image could not be served"

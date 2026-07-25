@@ -1,8 +1,19 @@
 #!/usr/bin/env python3
-"""Validate the distributable DB and approved local image subset."""
+"""Validate the distributable database and any locally fetched image packs.
+
+Image packs are optional downloads (scripts/fetch_dataset.py), so this check
+adapts to what is present:
+
+  * database: integrity, counts against data/public-corpus.json, referential
+    consistency, and absence of labeling process tables;
+  * images/: every file on disk must be referenced by the database and look
+    like a real JPEG/PNG. Referenced-but-not-downloaded files are fine unless
+    OIP_REQUIRE_IMAGES=1 (full local setups) is set.
+"""
 from __future__ import annotations
 
-import sqlite3
+import json
+import os
 import sys
 from pathlib import Path
 
@@ -13,6 +24,15 @@ if str(REPOSITORY_ROOT) not in sys.path:
 from runtime.archive_db import connect_read_only, ensure_working_database
 
 IMAGES_ROOT = REPOSITORY_ROOT / "images"
+CORPUS_PATH = REPOSITORY_ROOT / "data" / "public-corpus.json"
+PROCESS_TABLES = (
+    "labeling_status",
+    "label_candidates",
+    "labeling_runs",
+    "labeling_config",
+    "image_evaluations",
+    "prompt_tags",
+)
 
 
 def signature(path: Path) -> str:
@@ -21,49 +41,76 @@ def signature(path: Path) -> str:
         return "jpg"
     if header == b"\x89PNG\r\n\x1a\n":
         return "png"
-    if header.startswith(b"version "):
-        return "lfs"
     return "unknown"
 
 
 def main() -> int:
+    corpus = json.loads(CORPUS_PATH.read_text(encoding="utf-8"))
+    expected = corpus["counts"]
+
     database = ensure_working_database()
     with connect_read_only(database) as connection:
         assert connection.execute("PRAGMA integrity_check").fetchone()[0] == "ok"
-        prompt_count = connection.execute("SELECT count(*) FROM prompts").fetchone()[0]
-        image_count = connection.execute("SELECT count(*) FROM images").fetchone()[0]
-        translation_count = connection.execute(
-            "SELECT count(*) FROM prompt_translations WHERE translation_version='oip-visual-v2'"
-        ).fetchone()[0]
-        assert prompt_count >= 14_000
-        assert image_count >= 1
-        assert translation_count >= 28_000
+        actual = {
+            "prompts": connection.execute("SELECT count(*) FROM prompts").fetchone()[0],
+            "images": connection.execute("SELECT count(*) FROM images").fetchone()[0],
+            "translations": connection.execute(
+                "SELECT count(*) FROM prompt_translations"
+            ).fetchone()[0],
+            "prompt_labels": connection.execute(
+                "SELECT count(*) FROM prompt_labels"
+            ).fetchone()[0],
+            "media_labels": connection.execute(
+                "SELECT count(*) FROM media_labels"
+            ).fetchone()[0],
+            "taxonomy_labels": connection.execute(
+                "SELECT count(*) FROM taxonomy_labels"
+            ).fetchone()[0],
+        }
+        for key, value in expected.items():
+            assert actual.get(key) == value, (
+                f"count mismatch for {key}: db={actual.get(key)}, manifest={value}"
+            )
         assert connection.execute(
             "SELECT count(*) FROM images i LEFT JOIN prompts p USING(tweet_id) "
             "WHERE p.tweet_id IS NULL"
         ).fetchone()[0] == 0
+        assert connection.execute(
+            "SELECT count(*) FROM prompt_labels pl LEFT JOIN labels l ON l.id=pl.label_id "
+            "WHERE l.id IS NULL"
+        ).fetchone()[0] == 0
+        for table in PROCESS_TABLES:
+            present = connection.execute(
+                "SELECT 1 FROM sqlite_master WHERE type='table' AND name=?", (table,)
+            ).fetchone()
+            assert not present, f"process table must not ship publicly: {table}"
         database_paths = {
             str(row[0])
-            for row in connection.execute("SELECT local_path FROM images ORDER BY local_path")
+            for row in connection.execute("SELECT local_path FROM images")
         }
 
     disk_paths = {
         path.relative_to(REPOSITORY_ROOT).as_posix()
         for path in IMAGES_ROOT.rglob("*")
         if path.is_file()
-    }
-    assert database_paths == disk_paths, (
-        f"DB/files mismatch: missing={len(database_paths - disk_paths)}, "
-        f"unreferenced={len(disk_paths - database_paths)}"
-    )
+    } if IMAGES_ROOT.is_dir() else set()
+
+    strays = disk_paths - database_paths
+    assert not strays, f"{len(strays)} files on disk are not referenced by the DB, e.g. {sorted(strays)[:3]}"
+    missing = len(database_paths - disk_paths)
+    if os.environ.get("OIP_REQUIRE_IMAGES") == "1":
+        assert missing == 0, f"{missing} referenced images have not been fetched"
     invalid = [
-        path for path in sorted(IMAGES_ROOT.rglob("*"))
-        if path.is_file() and signature(path) not in {"jpg", "png", "lfs"}
-    ]
+        path
+        for path in sorted(IMAGES_ROOT.rglob("*"))
+        if path.is_file() and signature(path) == "unknown"
+    ] if disk_paths else []
     assert not invalid, f"invalid image assets: {invalid[:5]}"
+
     print(
-        f"Public data OK: {prompt_count} prompts, {image_count} approved images, "
-        f"{translation_count} translations"
+        f"Public data OK: {actual['prompts']:,} prompts, {actual['images']:,} image rows, "
+        f"{len(disk_paths):,} files fetched ({missing:,} not downloaded), "
+        f"{actual['translations']:,} translations"
     )
     return 0
 
