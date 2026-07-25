@@ -8,36 +8,7 @@ if errorlevel 1 (
 )
 
 echo.
-echo [1/4] Preparing Git LFS data...
-where git >nul 2>nul
-if errorlevel 1 (
-  echo.
-  echo Error: Git is required: https://git-scm.com/downloads
-  goto :fail
-)
-git lfs version >nul 2>nul
-if errorlevel 1 (
-  echo.
-  echo Error: Git LFS is required: https://git-lfs.com/
-  goto :fail
-)
-git lfs install --local
-if errorlevel 1 goto :fail
-git lfs pull
-if errorlevel 1 goto :fail
-if not exist "%CD%\db\prompts.db.gz" (
-  echo.
-  echo Error: The public database is missing. Clone this repository with Git LFS enabled.
-  goto :fail
-)
-for %%F in ("%CD%\db\prompts.db.gz") do if %%~zF LSS 1024 (
-  echo.
-  echo Error: The public database is still a Git LFS pointer. Run git lfs pull and try again.
-  goto :fail
-)
-
-echo.
-echo [2/4] Preparing Python with uv...
+echo [1/4] Preparing Python with uv...
 set "UV_EXE="
 set "UV_INSTALL_DIR=%CD%\.oip\tools\uv"
 for /f "delims=" %%I in ('where uv 2^>nul') do if not defined UV_EXE set "UV_EXE=%%I"
@@ -61,6 +32,17 @@ if not defined UV_EXE (
 )
 "%UV_EXE%" sync --locked
 if errorlevel 1 goto :fail
+set "OIP_PYTHON=%CD%\.venv\Scripts\python.exe"
+if not exist "%OIP_PYTHON%" (
+  echo.
+  echo Error: uv did not create the expected Python environment at "%OIP_PYTHON%"
+  goto :fail
+)
+
+echo.
+echo [2/4] Downloading the public dataset...
+"%OIP_PYTHON%" scripts\fetch_dataset.py
+if errorlevel 1 goto :fail
 
 echo.
 echo [3/4] Installing frontend dependencies...
@@ -83,12 +65,6 @@ if errorlevel 1 goto :fail
 
 echo.
 echo [4/4] Starting Open Image Prompts...
-set "OIP_PYTHON=%CD%\.venv\Scripts\python.exe"
-if not exist "%OIP_PYTHON%" (
-  echo.
-  echo Error: uv did not create the expected Python environment at "%OIP_PYTHON%"
-  goto :fail
-)
 node web\scripts\with_api.mjs dev
 set "OIP_EXIT_CODE=%ERRORLEVEL%"
 goto :done

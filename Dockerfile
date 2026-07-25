@@ -16,7 +16,11 @@ RUN npm --prefix web ci
 
 COPY . .
 
-RUN npm test \
+# Dataset assets live on GitHub Releases (see data/dataset-manifest.json),
+# so the build needs network access to github.com. Images are skipped: the
+# containerized gallery serves original source URLs as fallback.
+RUN node scripts/run_python.mjs scripts/fetch_dataset.py --db-only \
+    && npm test \
     && npm run lint \
     && npm run build \
     && rm -rf /app/.oip

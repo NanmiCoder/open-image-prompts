@@ -13,11 +13,13 @@
 - `img-gen-taste`：把模糊需求整理成明确的美术方向。
 - `img-gen-prompts`：检索可追溯的提示词—图片参考，并打开本地对比画廊。
 
-公开运行时快照包含 **14,693 条来源提示词**、**4,496 张已通过审核的本地图片**、**29,386 条翻译**、**170,226 条有效 v2 提示词标签**和 **185 个封闭视觉标签**。打标模型、回填工具、供应商配置、测试批次、错误日志以及其他打标过程记录均不在公开仓库中。
+公开数据集包含 **15,033 条来源提示词**、**25,216 张图片**、**29,388 条翻译**、**170,238 条有效 v2 提示词标签**和 **185 个封闭视觉标签**。打标模型、回填工具、供应商配置、测试批次、错误日志以及其他打标过程记录均不在公开仓库中。
+
+数据资产通过 [GitHub Releases](https://github.com/NanmiCoder/open-image-prompts/releases) 分发（不再使用 Git LFS）：仓库克隆保持轻量，`scripts/fetch_dataset.py` 会下载 SQLite 归档（约 80 MB）以及可选的按月图片包（合计约 4.3 GB），并做 sha256 校验。完整资产清单见 `data/dataset-manifest.json`。
 
 ## 一键启动
 
-先安装[带 Git LFS 的 Git](https://git-lfs.com/)和 [Node.js](https://nodejs.org/) 20.19+ 或 22.12+，然后克隆仓库：
+先安装 [Git](https://git-scm.com/downloads) 和 [Node.js](https://nodejs.org/) 20.19+ 或 22.12+，然后克隆仓库：
 
 ```bash
 git clone https://github.com/NanmiCoder/open-image-prompts.git
@@ -36,7 +38,7 @@ Windows：
 start.bat
 ```
 
-也可以直接在文件管理器中双击 `start.bat`。启动脚本会拉取 Git LFS 数据、按需安装 [uv](https://docs.astral.sh/uv/)、创建兼容的 Python 环境、安装前端依赖，并同时启动前后端。打开终端输出的本地地址即可。
+也可以直接在文件管理器中双击 `start.bat`。启动脚本会按需安装 [uv](https://docs.astral.sh/uv/)、创建兼容的 Python 环境、从 GitHub Releases 下载数据集、安装前端依赖，并同时启动前后端。打开终端输出的本地地址即可。如果想跳过体积较大的图片包（画廊会回退到原始来源图片地址），启动前设置 `OIP_FETCH_SKIP_IMAGES=1`。
 
 首次启动会把压缩 SQLite 解压到已忽略的 `.oip/runtime/`；后续启动会复用 Python 环境，并按锁文件刷新依赖。
 
@@ -45,14 +47,13 @@ start.bat
 Docker 会提供包含 Node.js 22 与 Python 3 的 Linux 隔离环境。镜像构建阶段会先执行公开数据校验、API/前端测试、lint 和生产构建，全部通过后才生成运行镜像：
 
 ```bash
-git lfs pull
 docker build -t open-image-prompts .
 docker run --rm --name open-image-prompts -p 4173:4173 open-image-prompts
 ```
 
 然后访问 <http://localhost:4173>。API 仍然只监听容器内部回环地址，仅通过前端代理对外提供；容器使用非特权 `node` 用户运行，并提供 `/health` 健康检查。
 
-因为已审核图片和压缩 SQLite 都包含在项目内，Docker 构建上下文约为 900 MB。以上命令适用于 Windows/macOS 的 Docker Desktop 和 Linux Docker Engine。
+构建过程会从 GitHub Releases 下载 SQLite 归档（需要能访问 github.com），图片通过原始来源地址回退展示。以上命令适用于 Windows/macOS 的 Docker Desktop 和 Linux Docker Engine。
 
 ## 安装 Skills
 
@@ -91,7 +92,7 @@ npm run test:retrieval
 - 有效 `oip-visual-v2` 提示词/图片标签；
 - 公开 taxonomy 与 FTS 搜索索引。
 
-公开 DB 不包含候选标签、模型或供应商配置、run ID、租约、模型理由、错误路径、评估表和 legacy 标签。图片只包含公开图片策略快照中状态为 `generated + allow` 的项目；未审核、`review`、`remove` 和扫描失败项目全部排除。
+公开 DB 不包含候选标签、模型或供应商配置、run ID、租约、模型理由、错误路径、评估表和 legacy 标签。
 
 更多信息见 [DATASET.md](./DATASET.md)、[DATA_LICENSE.md](./DATA_LICENSE.md) 和机器可读的 [公开语料清单](./data/public-corpus.json)。
 
