@@ -1,0 +1,122 @@
+name: macOS and Linux start smoke
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - .github/workflows/unix-start-smoke.yml
+      - pyproject.toml
+      - uv.lock
+      - package.json
+      - start.sh
+      - Dockerfile
+      - .dockerignore
+      - data/**
+      - evals/**
+      - retrieval/**
+      - runtime/**
+      - scripts/**
+      - server/**
+      - skills/**
+      - tests/**
+      - web/**
+      - README.md
+      - README.zh-CN.md
+      - DATASET.md
+
+permissions:
+  contents: read
+
+jobs:
+  unix-start:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Run start.sh and verify the application
+        env:
+          OIP_WEB_HOST: 127.0.0.1
+          OIP_WEB_PORT: '4173'
+          # Image packs total several GB; the gallery falls back to source URLs
+          # when files are absent, so CI verifies the database path only.
+          OIP_FETCH_SKIP_IMAGES: '1'
+        run: |
+          set -euo pipefail
+          ./start.sh > start.log 2>&1 &
+          start_pid=$!
+          cleanup() {
+            kill "$start_pid" 2>/dev/null || true
+            pkill -P "$start_pid" 2>/dev/null || true
+            echo '--- start.log ---'
+            cat start.log || true
+          }
+          trap cleanup EXIT
+
+          ready=''
+          for _ in $(seq 1 180); do
+            if ! kill -0 "$start_pid" 2>/dev/null; then
+              echo 'start.sh exited before the application became ready' >&2
+              exit 1
+            fi
+            if curl -fsS http://127.0.0.1:4173/health > /dev/null 2>&1; then
+              ready=1
+              break
+            fi
+            sleep 1
+          done
+          [ -n "$ready" ] || { echo 'not ready within 180s' >&2; exit 1; }
+
+          # The frontend must answer on the loopback address the launcher was
+          # told to use. A dev server that silently bound another interface or
+          # port would pass a "did it start" check but serve nobody.
+          curl -fsS http://127.0.0.1:4173/ | grep -q 'Open Image Prompts'
+          curl -fsS 'http://127.0.0.1:4173/api/prompts?limit=1' | grep -q '"tweet_id"'
+          curl -fsS http://127.0.0.1:4173/api/catalog | grep -q '"tools"'
+          echo 'start.sh smoke OK'
+
+  checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - uses: astral-sh/setup-uv@v5
+        with:
+          version: '0.6.9'
+
+      - run: uv sync --locked
+      - run: npm --prefix web ci
+
+      # Docs and the gallery port contract need neither the database nor the
+      # network, so they fail fast before the 80 MB download.
+      - name: Verify documentation against the shipped dataset
+        run: npm run verify:docs
+      - name: Verify gallery port selection
+        run: npm run test:gallery
+
+      - name: Download the database
+        run: npm run data:pull:db
+
+      - run: npm test
+      - run: npm run lint
+      - run: npm run build
+      - name: Report Skill readiness
+        run: npm run status
