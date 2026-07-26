@@ -4,11 +4,11 @@
   "selection": "full public corpus; labeling process tables excluded",
   "counts": {
     "prompts": 14858,
-    "images": 25356,
+    "images": 25402,
     "translations": 29716,
     "prompt_labels": 172295,
-    "media_labels": 289258,
+    "media_labels": 289779,
     "taxonomy_labels": 185
   },
-  "db_sha256": "a21c78c85591203131d2081337898bf5ae62739ca93655efa7bb2565b62b42b2"
+  "db_sha256": "680717b6737f775199bf8b0c78de0520386ab5cb6c9c3076d5d5aa10a86ea6d0"
 }
