@@ -40,6 +40,8 @@ REPOSITORY_URL = "https://github.com/NanmiCoder/open-image-prompts"
 # An abandoned agent session must not leak a detached gallery process forever.
 # Override with OIP_GALLERY_IDLE_TIMEOUT (seconds); 0 disables the watchdog.
 DEFAULT_IDLE_TIMEOUT = 4 * 60 * 60
+# Override with OIP_STARTUP_TIMEOUT (seconds); see startup_timeout().
+DEFAULT_STARTUP_TIMEOUT = 180
 
 
 def json_print(payload: object) -> None:
@@ -265,8 +267,11 @@ def wait_for_server(
     repository: Path,
     expected_instance: str,
     process: subprocess.Popen[bytes] | None = None,
-    timeout: float = 30.0,
+    timeout: float | None = None,
 ) -> dict[str, Any]:
+    # Safe to be generous: a failed bind exits the child at once and is reported
+    # immediately below, so the ceiling only applies to genuinely slow startups.
+    timeout = startup_timeout() if timeout is None else timeout
     deadline = time.monotonic() + timeout
     while time.monotonic() < deadline:
         record = read_pid_record(repository)
@@ -358,7 +363,8 @@ def stop_server(repository: Path) -> dict[str, Any]:
     return {"status": "stopped", "pid": pid}
 
 
-def wait_for_vite(process: subprocess.Popen[bytes], port: int, timeout: float = 30.0) -> None:
+def wait_for_vite(process: subprocess.Popen[bytes], port: int, timeout: float | None = None) -> None:
+    timeout = startup_timeout() if timeout is None else timeout
     deadline = time.monotonic() + timeout
     while time.monotonic() < deadline:
         if process.poll() is not None:
@@ -473,6 +479,27 @@ def make_proxy_handler(
     return Handler
 
 
+def startup_timeout() -> float:
+    """How long to wait for a child service to report ready.
+
+    The first start expands an 80 MB archive into a ~270 MB SQLite database, which
+    is seconds locally and far slower on a constrained machine. Readiness is
+    decided by probing, so a generous ceiling costs nothing when startup is quick.
+    """
+    raw = os.environ.get("OIP_STARTUP_TIMEOUT", "").strip()
+    if not raw:
+        return float(DEFAULT_STARTUP_TIMEOUT)
+    try:
+        value = float(raw)
+    except ValueError:
+        raise SystemExit(
+            f"OIP_STARTUP_TIMEOUT must be a number of seconds, got {raw!r}"
+        ) from None
+    if value <= 0:
+        raise SystemExit("OIP_STARTUP_TIMEOUT must be positive")
+    return value
+
+
 def gallery_idle_timeout() -> float:
     raw = os.environ.get("OIP_GALLERY_IDLE_TIMEOUT", "").strip()
     if not raw:
@@ -510,7 +537,8 @@ def serve(repository: Path, port: int, vite_port: int, instance_id: str) -> int:
     )
     server: http.server.ThreadingHTTPServer | None = None
     try:
-        deadline = time.monotonic() + 30
+        api_budget = startup_timeout()
+        deadline = time.monotonic() + api_budget
         while time.monotonic() < deadline:
             if api.poll() is not None:
                 raise SystemExit(f"gallery API exited with code {api.returncode}")
@@ -524,7 +552,10 @@ def serve(repository: Path, port: int, vite_port: int, instance_id: str) -> int:
             except (OSError, urllib.error.URLError):
                 time.sleep(0.1)
         else:
-            raise SystemExit("gallery API did not become ready within 30 seconds")
+            raise SystemExit(
+                f"gallery API did not become ready within {api_budget:.0f} seconds; "
+                "raise OIP_STARTUP_TIMEOUT (seconds) on a slow machine"
+            )
         wait_for_vite(vite, vite_port)
         activity = {"at": time.monotonic()}
         server = http.server.ThreadingHTTPServer(

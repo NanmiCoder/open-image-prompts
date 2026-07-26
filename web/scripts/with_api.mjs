@@ -18,6 +18,21 @@ function optionalWebPort(value) {
   return port
 }
 
+// The first start expands an 80 MB archive into a ~270 MB SQLite database and
+// warms the gallery filters. That is a couple of seconds on a fast local disk
+// but far slower on constrained CI runners, where a 30s budget used to abort a
+// start that was still making progress. Readiness is decided by probing /health,
+// so a generous ceiling costs nothing when startup is quick.
+function startupTimeoutMs() {
+  const raw = globalThis.process?.env.OIP_STARTUP_TIMEOUT?.trim()
+  if (!raw) return 180_000
+  const seconds = Number(raw)
+  if (!Number.isFinite(seconds) || seconds <= 0) {
+    throw new Error(`OIP_STARTUP_TIMEOUT must be a positive number of seconds, received: ${raw}`)
+  }
+  return seconds * 1000
+}
+
 async function freeLoopbackPort() {
   return new Promise((resolvePromise, reject) => {
     const server = createNetServer()
@@ -42,7 +57,8 @@ let viteServer
 let closing = false
 
 async function waitForApi() {
-  const deadline = Date.now() + 30_000
+  const budget = startupTimeoutMs()
+  const deadline = Date.now() + budget
   while (Date.now() < deadline) {
     if (api.exitCode !== null) throw new Error(`SQLite API exited with code ${api.exitCode}`)
     try {
@@ -53,7 +69,11 @@ async function waitForApi() {
     }
     await new Promise((resolvePromise) => setTimeout(resolvePromise, 100))
   }
-  throw new Error('SQLite API did not become ready within 30 seconds')
+  throw new Error(
+    `SQLite API did not become ready within ${budget / 1000} seconds. `
+    + 'The first start expands the SQLite archive, which is slow on constrained '
+    + 'machines; raise OIP_STARTUP_TIMEOUT (seconds) if it needs longer.',
+  )
 }
 
 async function close(code = 0) {

@@ -23,6 +23,9 @@ Useful environment variables:
 - `OIP_WEB_PORT`: frontend port. When set, the port is strict: a collision fails
   loudly instead of moving to another port. When unset, Vite picks the next free
   port starting at `5173` and prints the URL it actually serves.
+- `OIP_STARTUP_TIMEOUT`: seconds to wait for the SQLite API to report ready
+  (default `180`). The first start expands the archive into a ~270 MB database,
+  which can exceed a short budget on a constrained machine.
 - `OIP_API_HOST`: API bind address (default `127.0.0.1`).
 - `OIP_API_PORT`: API port (default `8787`).
 - `OIP_API_QUERY_CONCURRENCY`: maximum concurrent SQLite page/search queries
