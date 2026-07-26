@@ -77,11 +77,19 @@ api.on('exit', (code) => {
 
 try {
   await waitForApi()
-  const webHost = process.env.OIP_WEB_HOST?.trim() || undefined
+  // Bind loopback explicitly. Vite's default host is `localhost`, which resolves
+  // dual-stack: when another process already holds IPv4 127.0.0.1:5173 Vite can
+  // still bind [::1]:5173, skip its port-increment path, and print
+  // http://localhost:5173/ — a URL that opens the other application instead of
+  // this one. An explicit IPv4 host makes the collision visible so Vite moves to
+  // the next free port and prints the port it actually serves.
+  const webHost = process.env.OIP_WEB_HOST?.trim() || '127.0.0.1'
   const webPort = optionalWebPort(process.env.OIP_WEB_PORT)
   const webEndpoint = {
-    ...(webHost ? { host: webHost } : {}),
-    ...(webPort ? { port: webPort } : {}),
+    host: webHost,
+    // An explicit OIP_WEB_PORT is a contract (Docker, CI, published links):
+    // fail loudly rather than drift to a port nobody is watching.
+    ...(webPort ? { port: webPort, strictPort: true } : {}),
   }
   viteServer = mode === 'preview'
     ? await preview({ root: webRoot, preview: webEndpoint })

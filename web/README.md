@@ -12,12 +12,17 @@ npm run dev
 The first run expands `../db/prompts.db.gz` once under the ignored
 `.oip/runtime/` directory. The cross-platform Node launcher finds Python,
 starts the read-only SQLite API, and then starts Vite. The browser fetches
-paginated JSON while Vite serves approved Git LFS images from `../images/`.
+paginated JSON while Vite serves the fetched images from `../images/`, falling
+back to each record's original source URL when a file was not downloaded.
 
 Useful environment variables:
 
 - `OIP_DB_PATH`: decompressed SQLite path.
 - `OIP_DB_ARCHIVE_PATH`: source `.db.gz` path.
+- `OIP_WEB_HOST`: frontend bind address (default `127.0.0.1`).
+- `OIP_WEB_PORT`: frontend port. When set, the port is strict: a collision fails
+  loudly instead of moving to another port. When unset, Vite picks the next free
+  port starting at `5173` and prints the URL it actually serves.
 - `OIP_API_HOST`: API bind address (default `127.0.0.1`).
 - `OIP_API_PORT`: API port (default `8787`).
 - `OIP_API_QUERY_CONCURRENCY`: maximum concurrent SQLite page/search queries
