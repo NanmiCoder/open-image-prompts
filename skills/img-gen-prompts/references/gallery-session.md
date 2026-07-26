@@ -28,6 +28,12 @@ a URL shaped like:
 http://127.0.0.1:4173/?session=<uuid>&focus=<tweet_id>&lang=zh
 ```
 
+Never assume the port. When `4173` is already taken — most often by a gallery
+from another checkout on the same machine — the command binds a free port and the
+returned `url` carries it. Always open the `url` from the response. Pass `--port`
+only when a specific port is required; an explicit port that is unavailable fails
+immediately with the owning process named, instead of being silently changed.
+
 Use `--creative-spec '<json-object>'` to preserve the style playbook hand-off.
 Use `--no-start` when an owned gallery server is already available and only a
 new session file and URL are needed. The response always includes
@@ -48,7 +54,7 @@ returned `start_command` before presenting it as openable.
 ## Process ownership
 
 ```bash
-python3 <absolute-skill-directory>/scripts/oip.py start --port 4173
+python3 <absolute-skill-directory>/scripts/oip.py start
 python3 <absolute-skill-directory>/scripts/oip.py status
 python3 <absolute-skill-directory>/scripts/oip.py stop
 ```
@@ -56,6 +62,12 @@ python3 <absolute-skill-directory>/scripts/oip.py stop
 The server binds only `127.0.0.1`. Runtime state lives under `.oip/`. `stop`
 requires both the stored PID and the instance-specific local health response to
 match before it sends a signal, so it cannot stop an unrelated reused PID.
+
+Call `stop` when the user is done browsing. The gallery is deliberately detached
+from the calling process, so nothing else reaps it when a session ends. As a
+backstop it shuts itself down after four hours without gallery traffic; override
+with `OIP_GALLERY_IDLE_TIMEOUT` in seconds, or `0` to disable the watchdog for a
+long browsing session. Health probes do not count as traffic.
 
 The local bridge serves `/_oip/sessions/<uuid>.json` and proxies all other
 requests to the repository's Vite gallery. The gallery resolves only the
