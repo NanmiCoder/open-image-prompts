@@ -95,10 +95,24 @@ def main() -> int:
         if path.is_file()
     } if IMAGES_ROOT.is_dir() else set()
 
-    strays = disk_paths - database_paths
-    assert not strays, f"{len(strays)} files on disk are not referenced by the DB, e.g. {sorted(strays)[:3]}"
+    # A release that drops records leaves the files it used to reference behind:
+    # fetch_dataset.py extracts packs but never deletes. That is a stale local
+    # artifact, not corruption, and the gallery simply never references it - so it
+    # must not fail an ordinary checkout after a legitimate re-pull. Treat it the
+    # same way as the missing-file direction: reported always, fatal only for the
+    # exact-mirror setups that opt in.
+    strays = sorted(disk_paths - database_paths)
+    require_images = os.environ.get("OIP_REQUIRE_IMAGES") == "1"
+    if strays:
+        detail = (
+            f"{len(strays)} files on disk are not referenced by the DB, "
+            f"e.g. {strays[:3]}; remove them with "
+            "`python3 scripts/fetch_dataset.py --prune`"
+        )
+        assert not require_images, detail
+        print(f"warning: {detail}")
     missing = len(database_paths - disk_paths)
-    if os.environ.get("OIP_REQUIRE_IMAGES") == "1":
+    if require_images:
         assert missing == 0, f"{missing} referenced images have not been fetched"
     invalid = [
         path

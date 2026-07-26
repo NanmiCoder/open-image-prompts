@@ -118,10 +118,48 @@ def safe_extract(archive: Path, root: Path) -> int:
     return count
 
 
+def prune_unreferenced_images() -> int:
+    """Delete images/ files the current database no longer references.
+
+    A release that drops records leaves its files behind, because extraction never
+    deletes. Deleting is opt-in rather than automatic: the files are re-downloadable
+    but a user may be holding on to an older corpus on purpose.
+    """
+    if str(REPOSITORY_ROOT) not in sys.path:
+        sys.path.insert(0, str(REPOSITORY_ROOT))
+    from runtime.archive_db import connect_read_only, ensure_working_database
+
+    images_root = REPOSITORY_ROOT / "images"
+    if not images_root.is_dir():
+        print("prune: images/ is absent, nothing to do")
+        return 0
+    database = ensure_working_database()
+    with connect_read_only(database) as connection:
+        referenced = {str(row[0]) for row in connection.execute("SELECT local_path FROM images")}
+    removed = 0
+    for path in sorted(images_root.rglob("*")):
+        if not path.is_file():
+            continue
+        if path.relative_to(REPOSITORY_ROOT).as_posix() in referenced:
+            continue
+        path.unlink()
+        removed += 1
+    for directory in sorted(images_root.rglob("*"), reverse=True):
+        if directory.is_dir() and not any(directory.iterdir()):
+            directory.rmdir()
+    print(f"prune: removed {removed:,} unreferenced files from images/")
+    return removed
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--db-only", action="store_true", help="skip image packs")
     parser.add_argument("--assets-dir", type=Path, help="offline mode: copy assets from this directory instead of downloading")
+    parser.add_argument(
+        "--prune",
+        action="store_true",
+        help="after fetching, delete images/ files the database no longer references",
+    )
     args = parser.parse_args()
 
     if not MANIFEST_PATH.is_file():
@@ -137,6 +175,8 @@ def main() -> int:
 
     if skip_images:
         print("[2/2] image packs skipped (--db-only)")
+        if args.prune:
+            prune_unreferenced_images()
         return 0
 
     packs = manifest.get("image_packs", [])
@@ -154,6 +194,8 @@ def main() -> int:
         archive.unlink()
         print(f"  {entry['asset']:26s} extracted {extracted:,} files")
 
+    if args.prune:
+        prune_unreferenced_images()
     total = sum(1 for path in (REPOSITORY_ROOT / "images").rglob("*") if path.is_file())
     print(f"done: images/ now holds {total:,} files")
     return 0

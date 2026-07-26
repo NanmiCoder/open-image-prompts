@@ -105,11 +105,18 @@ are checked against `data/public-corpus.json`; update the data, not just the
 sentence.
 
 `npm run test:retrieval` ends in a gated benchmark that **fails closed**: every
-`related` result a query returns must carry a human judgement in
-`evals/retrieval/intents.jsonl` (`related_relevant_ids`). Publishing a new dataset
-can surface `related` references that nobody has judged yet, and the benchmark then
-fails by design. Resolving it requires looking at the images and recording a real
-verdict — never invent an entry to turn the suite green.
+`related` result a query returns must carry a verdict in
+`evals/retrieval/intents.jsonl` — `related_relevant_ids` to accept a reference,
+`related_rejected_ids` to record that it was reviewed and turned down. Publishing a
+new dataset can surface references nobody has judged yet, and the benchmark then
+fails by design. Resolving it means looking at the images and recording a real
+verdict — never invent an entry to turn the suite green. A rejected reference still
+counts against `related_precision`, which is intended: a reference a reviewer
+turned down should not be reaching users.
+
+Re-running the pull after a release that dropped records leaves unreferenced files
+in `images/`; `verify:data` reports them and continues. Clear them with
+`python3 scripts/fetch_dataset.py --prune`.
 
 If a start times out on a slow machine, raise `OIP_STARTUP_TIMEOUT` (seconds,
 default 180) rather than assuming the application is broken.
