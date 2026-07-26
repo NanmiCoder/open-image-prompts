@@ -105,12 +105,20 @@ def main() -> int:
                 reviewed_related_ids = set(
                     (case.get("related_relevant_ids") or {}).get(locale) or []
                 )
+                # A reference someone looked at and turned down is a different state
+                # from one nobody has looked at yet. Collapsing the two made a red
+                # run ambiguous: it could not say whether the fixture had a review
+                # backlog or the related channel had started returning bad
+                # references. Only genuinely unreviewed results count as unjudged.
+                rejected_related_ids = set(
+                    (case.get("related_rejected_ids") or {}).get(locale) or []
+                )
                 for item in result["related_results"]:
                     tags = tag_ids(item)
                     missing = expected - tags
                     hard_violations = sorted(forbidden & tags)
                     reviewed_relevant = item["tweet_id"] in reviewed_related_ids
-                    unjudged = not reviewed_relevant
+                    unjudged = not reviewed_relevant and item["tweet_id"] not in rejected_related_ids
                     relevant = reviewed_relevant and len(missing) <= 1 and not hard_violations
                     related_relevant += int(relevant)
                     related_unjudged += int(unjudged)
@@ -118,7 +126,12 @@ def main() -> int:
                     related_rows.append({
                         "tweet_id": item["tweet_id"],
                         "relevant": relevant,
-                        "visually_reviewed": reviewed_relevant,
+                        "visually_reviewed": reviewed_relevant or not unjudged,
+                        "review_verdict": (
+                            "relevant" if reviewed_relevant
+                            else "rejected" if not unjudged
+                            else "unreviewed"
+                        ),
                         "missing_expected": sorted(missing),
                         "declared_missing": item["missing_constraints"],
                         "hard_violations": hard_violations,

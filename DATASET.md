@@ -42,4 +42,13 @@ See `DATA_LICENSE.md` for the license split and the takedown process.
 `data/public-corpus.json` records the dataset version, taxonomy version, row
 counts, and database digest. Run `npm run verify:data` to check SQLite
 integrity, DB/file correspondence for fetched packs, and image signatures.
-Set `OIP_REQUIRE_IMAGES=1` to additionally require a complete image set.
+Set `OIP_REQUIRE_IMAGES=1` to additionally require a complete image set, with
+no file left over from an earlier release.
+
+Extraction never deletes, so a release that drops records leaves its files in
+`images/`. The check reports them and keeps going, because the gallery simply
+never references them. Reclaim the space when you want to:
+
+```bash
+python3 scripts/fetch_dataset.py --prune
+```

@@ -15,7 +15,7 @@ import sqlite3
 import sys
 from collections import defaultdict
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any, Iterable, Sequence
 
 REPO_DIR = Path(__file__).resolve().parents[1]
 if str(REPO_DIR) not in sys.path:
@@ -50,6 +50,17 @@ RELATED_RELAXABLE_TAGS = frozenset({
     "camera_lens:long-exposure",
     "visual_style:minimal",
 })
+# Relaxing a facet means accepting a reference that does not *declare* it. It must
+# not mean accepting one that declares the opposite: "black-and-white low-key noir
+# alley portrait" was returning a bright natural-daylight lifestyle portrait, which
+# shares only the monochrome treatment and demonstrates none of the requested
+# grammar. Entries are deliberately limited to formal opposites within one
+# dimension; add a pair only after checking it against the retrieval benchmark,
+# since dropping a candidate also drops whatever coverage it provided.
+RELATED_CONTRADICTORY_TAGS: dict[str, frozenset[str]] = {
+    "lighting:low-key": frozenset({"lighting:high-key", "lighting:natural-daylight"}),
+    "lighting:high-key": frozenset({"lighting:low-key"}),
+}
 RELATED_IMAGE_EVIDENCE_DIMENSIONS = frozenset({
     "subject_type",
     "human_attributes",
@@ -809,10 +820,17 @@ def diversify_tiers(
     return chosen
 
 
-def related_candidate_allowed(intent: SearchIntent, item: dict[str, Any]) -> bool:
+def related_candidate_allowed(
+    intent: SearchIntent,
+    item: dict[str, Any],
+    relaxed: Sequence[str] = (),
+) -> bool:
     """Require visual evidence and reject obvious gallery-hostile near matches."""
     tag_ids = set(item.get("_tag_ids") or ())
     tag_scopes = item.get("_tag_scopes") or {}
+    for constraint in relaxed:
+        if RELATED_CONTRADICTORY_TAGS.get(constraint, frozenset()) & tag_ids:
+            return False
     requested = {
         constraint.tag
         for constraint in [*intent.locked_tags, *intent.must_tags, *intent.should_tags]
@@ -905,7 +923,7 @@ def run_search(conn: sqlite3.Connection, args: argparse.Namespace) -> dict[str, 
             )
             related_hits = [
                 item for item in related_hits
-                if related_candidate_allowed(tier_intent, item)
+                if related_candidate_allowed(tier_intent, item, [constraint])
             ]
             related_tiers.append(related_hits)
             related_tier_summaries.append({
