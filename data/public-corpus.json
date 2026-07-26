@@ -3,12 +3,12 @@
   "taxonomy_version": "oip-visual-v2",
   "selection": "full public corpus; labeling process tables excluded",
   "counts": {
-    "prompts": 14594,
+    "prompts": 15108,
     "images": 25356,
-    "translations": 29188,
-    "prompt_labels": 169306,
+    "translations": 30216,
+    "prompt_labels": 175067,
     "media_labels": 289258,
     "taxonomy_labels": 185
   },
-  "db_sha256": "a0968fed009fda6af18f030c4f53d8fa9bab5231e92de169ed7e75d801e077ad"
+  "db_sha256": "5939a426de92dc32139b778be1d2aac7982055ac030b92e2de477ac6856c3995"
 }
