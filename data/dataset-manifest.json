@@ -1,21 +1,21 @@
 {
   "schema": 1,
   "dataset_version": "2026-07-26",
-  "generated_at": "2026-07-26T15:16:07.761372+00:00",
+  "generated_at": "2026-07-26T16:19:45.441108+00:00",
   "taxonomy_version": "oip-visual-v2",
   "selection": "full public corpus; labeling process tables excluded",
   "release_repo": "NanmiCoder/open-image-prompts",
   "db": {
     "asset": "prompts.db.gz",
     "tag": "dataset-2026-07-26",
-    "sha256": "9cec9c7d83a09770663f6cd10098accb0afa9e89a64d9d848f16c103478096ad",
-    "bytes": 82973943,
+    "sha256": "c4096e96b574f6f70c8ade8f6091f2f64f48054d9476de5b66650ec1fc4ca963",
+    "bytes": 80582213,
     "counts": {
-      "prompts": 15086,
-      "images": 25318,
-      "translations": 30172,
-      "prompt_labels": 174817,
-      "media_labels": 288816,
+      "prompts": 14693,
+      "images": 24479,
+      "translations": 29386,
+      "prompt_labels": 170226,
+      "media_labels": 279189,
       "taxonomy_labels": 185
     }
   },
@@ -78,20 +78,20 @@
     },
     {
       "asset": "images-2026-06.tar.gz",
-      "tag": "dataset-2026-07-25",
-      "sha256": "206cd4b65f46f84aa81c81876504226c8be43b191ad2861fc31c8553dac8055b",
-      "bytes": 1193592069,
-      "files": 6832,
-      "signature": "02d4d3566b182c6cb49ea10b57b2202595ed1c89bc6401854976c40e18f31580"
+      "tag": "dataset-2026-07-26",
+      "sha256": "c851b05e1e67438024032576414b1f440dda94cbff54542667dc4b4807a568fc",
+      "bytes": 1193321449,
+      "files": 6831,
+      "signature": "f916d7756624fb6b3c5988d5053a0350e8d565d899b8c855961e736c69219a95"
     },
     {
       "asset": "images-2026-07.tar.gz",
       "tag": "dataset-2026-07-26",
-      "sha256": "6d014a950ff9c2403cd5f07d7cd6c4190bbebb019f991825bec1b8b9ad5e055a",
-      "bytes": 896624988,
-      "files": 5217,
-      "signature": "4b47c648a9c2e59eaa226164691eba5b79dbfac2d8377d4c9047f4724cf2183b"
+      "sha256": "d41495512059ef9c6e437e13f8827f691a7d3b33ae6a4695c4424af494213925",
+      "bytes": 750538437,
+      "files": 4379,
+      "signature": "73fcf72e6c149035e7c0f42389d3490dfa2763f0c7fdb3ec06918c243f883301"
     }
   ],
-  "images_total": 25318
+  "images_total": 24479
 }
