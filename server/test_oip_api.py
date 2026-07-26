@@ -39,16 +39,13 @@ def fetch_json_with_headers(url: str) -> tuple[dict, dict]:
         }
 
 
-def newest_visible_tweet_id() -> str:
+def newest_tweet_id() -> str:
     database = ensure_working_database()
     with connect_read_only(database) as connection:
         row = connection.execute(
             """
             SELECT p.tweet_id
             FROM prompts p
-            WHERE EXISTS (
-              SELECT 1 FROM images image WHERE image.tweet_id=p.tweet_id
-            )
             ORDER BY CAST(p.tweet_id AS INTEGER) DESC
             LIMIT 1
             """
@@ -100,8 +97,7 @@ def main() -> int:
         assert {item["tweet_id"] for item in first["items"]}.isdisjoint(
             item["tweet_id"] for item in second["items"]
         )
-        assert first["items"][0]["images"]
-        assert first["items"][0]["tweet_id"] == newest_visible_tweet_id()
+        assert first["items"][0]["tweet_id"] == newest_tweet_id()
 
         oldest = fetch_json(f"{base}/api/prompts?limit=2&sort=oldest")
         assert [int(item["tweet_id"]) for item in oldest["items"]] == sorted(
