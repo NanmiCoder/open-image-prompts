@@ -33,6 +33,10 @@ QUERY_CONCURRENCY = max(1, int(os.environ.get("OIP_API_QUERY_CONCURRENCY", "4"))
 QUERY_WAIT_SECONDS = max(0.1, float(os.environ.get("OIP_API_QUERY_WAIT_SECONDS", "3")))
 PROMPT_CACHE_ENTRIES = max(0, int(os.environ.get("OIP_API_CACHE_ENTRIES", "128")))
 MAX_PAGE_SIZE = 60
+VISIBLE_PROMPT_SQL = (
+    "EXISTS (SELECT 1 FROM images visible_image "
+    "WHERE visible_image.tweet_id=p.tweet_id)"
+)
 _catalog_cache: dict | None = None
 _catalog_lock = Lock()
 _query_slots = BoundedSemaphore(QUERY_CONCURRENCY)
@@ -198,7 +202,9 @@ def catalog(connection: sqlite3.Connection, taxonomy: str) -> dict:
         )
     ]
     stats = {
-        "prompts": connection.execute("SELECT COUNT(*) FROM prompts").fetchone()[0],
+        "prompts": connection.execute(
+            f"SELECT COUNT(*) FROM prompts p WHERE {VISIBLE_PROMPT_SQL}"
+        ).fetchone()[0],
         "images": connection.execute("SELECT COUNT(*) FROM images").fetchone()[0],
         "authors": len(authors),
         "tools": len(tools),
@@ -369,9 +375,7 @@ class Handler(BaseHTTPRequestHandler):
                 separators=(",", ":"),
             ).encode()
 
-        clauses: list[str] = [
-            "EXISTS (SELECT 1 FROM images visible_image WHERE visible_image.tweet_id=p.tweet_id)"
-        ]
+        clauses: list[str] = [VISIBLE_PROMPT_SQL]
         arguments: list[object] = []
 
         for column, key in (("p.tool", "tool"), ("p.author", "author")):
@@ -414,7 +418,7 @@ class Handler(BaseHTTPRequestHandler):
             SELECT p.tweet_id,p.author,p.tool,p.prompt_text,p.created_at,
                    p.tweet_url,p.collected_at
             FROM prompts p{where}
-            ORDER BY COALESCE(p.created_at,p.collected_at) {order}
+            ORDER BY CAST(p.tweet_id AS INTEGER) {order}
             LIMIT ? OFFSET ?
             """,
             [*arguments, limit, offset],

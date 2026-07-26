@@ -481,7 +481,7 @@ def candidate_tweet_ids(
         candidates.update(str(row[0]) for row in conn.execute(
             f"""
             SELECT p.tweet_id FROM prompts p {where_sql}
-            ORDER BY COALESCE(p.created_at,p.collected_at) DESC LIMIT ?
+            ORDER BY CAST(p.tweet_id AS INTEGER) DESC LIMIT ?
             """,
             params,
         ))

@@ -75,6 +75,18 @@ def main() -> int:
             "SELECT count(*) FROM images i LEFT JOIN prompts p USING(tweet_id) "
             "WHERE p.tweet_id IS NULL"
         ).fetchone()[0] == 0
+        prompt_without_images = connection.execute(
+            """
+            SELECT count(*)
+            FROM prompts p
+            WHERE NOT EXISTS (
+              SELECT 1 FROM images image WHERE image.tweet_id=p.tweet_id
+            )
+            """
+        ).fetchone()[0]
+        assert prompt_without_images == 0, (
+            f"{prompt_without_images} public prompts have no image rows"
+        )
         assert connection.execute(
             "SELECT count(*) FROM prompt_labels pl LEFT JOIN labels l ON l.id=pl.label_id "
             "WHERE l.id IS NULL"

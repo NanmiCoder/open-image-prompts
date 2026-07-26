@@ -12,6 +12,10 @@ import urllib.request
 from pathlib import Path
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
+if str(REPOSITORY_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPOSITORY_ROOT))
+
+from runtime.archive_db import connect_read_only, ensure_working_database
 
 
 def free_port() -> int:
@@ -33,6 +37,24 @@ def fetch_json_with_headers(url: str) -> tuple[dict, dict]:
         return json.load(response), {
             name.casefold(): value for name, value in response.headers.items()
         }
+
+
+def newest_visible_tweet_id() -> str:
+    database = ensure_working_database()
+    with connect_read_only(database) as connection:
+        row = connection.execute(
+            """
+            SELECT p.tweet_id
+            FROM prompts p
+            WHERE EXISTS (
+              SELECT 1 FROM images image WHERE image.tweet_id=p.tweet_id
+            )
+            ORDER BY CAST(p.tweet_id AS INTEGER) DESC
+            LIMIT 1
+            """
+        ).fetchone()
+    assert row is not None
+    return str(row["tweet_id"])
 
 
 def main() -> int:
@@ -70,11 +92,21 @@ def main() -> int:
         first = fetch_json(f"{base}/api/prompts?limit=2&offset=0")
         second = fetch_json(f"{base}/api/prompts?limit=2&offset=2")
         assert len(first["items"]) == len(second["items"]) == 2
+        assert catalog["stats"]["prompts"] == first["total"]
         assert first["total"] >= 2_500
+        assert [int(item["tweet_id"]) for item in first["items"]] == sorted(
+            int(item["tweet_id"]) for item in first["items"]
+        )[::-1]
         assert {item["tweet_id"] for item in first["items"]}.isdisjoint(
             item["tweet_id"] for item in second["items"]
         )
         assert first["items"][0]["images"]
+        assert first["items"][0]["tweet_id"] == newest_visible_tweet_id()
+
+        oldest = fetch_json(f"{base}/api/prompts?limit=2&sort=oldest")
+        assert [int(item["tweet_id"]) for item in oldest["items"]] == sorted(
+            int(item["tweet_id"]) for item in oldest["items"]
+        )
 
         selected_ids = [second["items"][1]["tweet_id"], first["items"][0]["tweet_id"]]
         ids_query = urllib.parse.urlencode(
