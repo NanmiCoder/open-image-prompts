@@ -22,11 +22,25 @@ python3 <absolute-skill-directory>/scripts/oip.py status
 ```
 
 Stop unless `ready` is true and the active taxonomy is exactly
-`oip-visual-v2`. The current checkout is expected to contain the complete Git
-LFS image corpus; if the archive, local images, or gallery dependencies are
-missing, run `npm run setup` from the repository root before continuing. This
-Skill is read-only: never activate a taxonomy, label records, publish data, or
-modify the database.
+`oip-visual-v2`. The dataset is not part of the repository: `db/prompts.db.gz`
+and `images/` are downloaded from GitHub Releases. If the archive, local images,
+or gallery dependencies are missing, run `npm run setup` from the repository root
+before continuing.
+
+If the script reports that the repository cannot be found, this Skill was
+installed as a copy outside a checkout. Point it at one, or create one:
+
+```bash
+git clone https://github.com/NanmiCoder/open-image-prompts.git
+cd open-image-prompts
+npm run data:pull        # add :db to skip the multi-gigabyte image packs
+export OIP_REPO_ROOT="$PWD"
+```
+
+Search and retrieval work without the image packs; only local image preview
+needs them, and the gallery falls back to each record's source URL. This Skill is
+read-only: never activate a taxonomy, label records, publish data, or modify the
+database.
 
 ## Search the user's actual intent
 

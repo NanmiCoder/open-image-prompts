@@ -7,9 +7,12 @@ on:
       - .github/workflows/windows-start-smoke.yml
       - pyproject.toml
       - uv.lock
+      - package.json
       - start.bat
-      - scripts/run_python.mjs
-      - server/oip_api.py
+      - runtime/**
+      - scripts/**
+      - server/**
+      - skills/**
       - web/**
 
 permissions:

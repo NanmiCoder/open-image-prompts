@@ -13,7 +13,10 @@ An open, local-first visual prompt archive with two installable Agent Skills:
 - `img-gen-taste` turns a rough brief into a clear art direction.
 - `img-gen-prompts` retrieves traceable prompt-image references and opens a local comparison gallery.
 
-The public dataset contains **15,033 source prompts**, **25,216 images**, **29,388 translations**, **170,238 active v2 prompt labels**, and a closed taxonomy of **185 visual labels**. Labeling models, backfill tools, provider configuration, test runs, error logs, and other labeling-process records are not included.
+Working through a coding agent? [AGENTS.md](./AGENTS.md) is the condensed setup,
+port, and Skill contract.
+
+The public dataset contains **14,693 source prompts**, **24,479 images**, **29,386 translations**, **170,226 active v2 prompt labels**, and a closed taxonomy of **185 visual labels**. Labeling models, backfill tools, provider configuration, test runs, error logs, and other labeling-process records are not included. These counts are checked against `data/public-corpus.json` by `npm run verify:docs`.
 
 Dataset assets ship through [GitHub Releases](https://github.com/NanmiCoder/open-image-prompts/releases) instead of Git LFS: the repository clone stays small, and `scripts/fetch_dataset.py` downloads the SQLite archive (~80 MB) plus optional monthly image packs (~4.3 GB total) with sha256 verification. See `data/dataset-manifest.json` for the exact asset list.
 
@@ -175,7 +178,7 @@ npm run build
 npm run status
 ```
 
-The API and Skill open SQLite in read-only immutable mode. The gallery binds to `127.0.0.1` by default and never starts a labeling job.
+The API and Skill open SQLite in read-only immutable mode. Every service binds `127.0.0.1` by default and never starts a labeling job. The frontend starts at port `5173` and moves to the next free port when it is taken, printing the URL it actually serves; set `OIP_WEB_HOST`/`OIP_WEB_PORT` to pin them, in which case a port collision fails loudly instead of drifting. The Skill's gallery bridge behaves the same way around port `4173`.
 
 ## License
 

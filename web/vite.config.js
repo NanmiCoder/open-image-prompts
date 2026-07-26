@@ -105,6 +105,11 @@ export default defineConfig({
   base: './',
   plugins: [react(), tailwindcss(), archiveImagesPlugin(), archiveAssetsPlugin()],
   server: {
+    // Never inherit Vite's dual-stack `localhost` default: it lets the dev
+    // server bind [::1] while an unrelated process owns IPv4 on the same port,
+    // and the printed localhost URL then opens that other application.
+    // scripts/with_api.mjs overrides this from OIP_WEB_HOST when set.
+    host: '127.0.0.1',
     hmr: GALLERY_HMR_PORT
       ? { host: '127.0.0.1', clientPort: GALLERY_HMR_PORT }
       : undefined,
@@ -114,6 +119,7 @@ export default defineConfig({
     },
   },
   preview: {
+    host: '127.0.0.1',
     proxy: {
       '/api': `http://127.0.0.1:${API_PORT}`,
       '/health': `http://127.0.0.1:${API_PORT}`,

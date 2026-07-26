@@ -32,6 +32,10 @@ Read at most two references for a genuinely cross-domain request. If no card
 fits, compose from first principles and say that no card was used. Route by the
 requested visual grammar: a tattoo, car, or bottle is a subject, not a style.
 
+Every card carries an explicit id bullet, written as ``- `id`: `card-id` ``. Take
+`style_card_id` from that bullet only — some files use the id as the section
+heading and others use a prose title, so a heading is not a reliable id.
+
 ## Work in two phases
 
 1. **Explore when direction is unclear.** Offer two or three strong, visibly

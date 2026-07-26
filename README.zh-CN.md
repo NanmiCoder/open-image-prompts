@@ -13,7 +13,9 @@
 - `img-gen-taste`：把模糊需求整理成明确的美术方向。
 - `img-gen-prompts`：检索可追溯的提示词—图片参考，并打开本地对比画廊。
 
-公开数据集包含 **15,033 条来源提示词**、**25,216 张图片**、**29,388 条翻译**、**170,238 条有效 v2 提示词标签**和 **185 个封闭视觉标签**。打标模型、回填工具、供应商配置、测试批次、错误日志以及其他打标过程记录均不在公开仓库中。
+用编程智能体接入？[AGENTS.md](./AGENTS.md) 是精简版的安装、端口与 Skill 约定说明。
+
+公开数据集包含 **14,693 条来源提示词**、**24,479 张图片**、**29,386 条翻译**、**170,226 条有效 v2 提示词标签**和 **185 个封闭视觉标签**。打标模型、回填工具、供应商配置、测试批次、错误日志以及其他打标过程记录均不在公开仓库中。以上数字由 `npm run verify:docs` 与 `data/public-corpus.json` 对账。
 
 数据资产通过 [GitHub Releases](https://github.com/NanmiCoder/open-image-prompts/releases) 分发（不再使用 Git LFS）：仓库克隆保持轻量，`scripts/fetch_dataset.py` 会下载 SQLite 归档（约 80 MB）以及可选的按月图片包（合计约 4.3 GB），并做 sha256 校验。完整资产清单见 `data/dataset-manifest.json`。
 
@@ -163,7 +165,7 @@ npm run build
 npm run status
 ```
 
-API 与 Skill 均以只读 immutable 模式打开 SQLite。画廊默认只绑定 `127.0.0.1`，不会启动任何打标任务。
+API 与 Skill 均以只读 immutable 模式打开 SQLite。所有服务默认只绑定 `127.0.0.1`，不会启动任何打标任务。前端从 `5173` 开始，端口被占用时自动顺延到下一个空闲端口，并打印它实际监听的地址；用 `OIP_WEB_HOST`/`OIP_WEB_PORT` 可以固定，此时端口冲突会直接报错而不是悄悄换端口。Skill 的画廊桥接服务在 `4173` 上是同样的行为。
 
 ## 许可证
 

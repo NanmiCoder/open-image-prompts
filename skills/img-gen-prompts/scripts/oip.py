@@ -20,6 +20,7 @@ import shutil
 import socket
 import subprocess
 import sys
+import threading
 import time
 import urllib.error
 import urllib.parse
@@ -35,6 +36,10 @@ SESSION_SCHEMA = "oip-gallery-session-v1"
 SESSION_ID_RE = re.compile(r"^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$")
 LOOPBACK = "127.0.0.1"
 DEFAULT_PORT = 4173
+REPOSITORY_URL = "https://github.com/NanmiCoder/open-image-prompts"
+# An abandoned agent session must not leak a detached gallery process forever.
+# Override with OIP_GALLERY_IDLE_TIMEOUT (seconds); 0 disables the watchdog.
+DEFAULT_IDLE_TIMEOUT = 4 * 60 * 60
 
 
 def json_print(payload: object) -> None:
@@ -50,8 +55,15 @@ def find_repository() -> Path:
         if (candidate / "scripts" / "prompt_library.py").is_file() and (candidate / "web" / "package.json").is_file():
             return candidate.resolve()
     raise SystemExit(
-        "Open Image Prompts repository not found. Install this skill by symlink "
-        "from the repository or set OIP_REPO_ROOT to the repository path."
+        "Open Image Prompts repository not found. This Skill needs the checkout "
+        "for its SQLite archive and gallery; a copied installation cannot find it "
+        "on its own.\n"
+        "If you already have the repository, point the Skill at it:\n"
+        "  export OIP_REPO_ROOT=/path/to/open-image-prompts\n"
+        "If you do not have it yet, clone it and download the dataset:\n"
+        f"  git clone {REPOSITORY_URL}.git\n"
+        "  cd open-image-prompts && npm run data:pull:db   # add npm run data:pull for local images\n"
+        "  export OIP_REPO_ROOT=\"$PWD\""
     )
 
 
@@ -202,7 +214,59 @@ def free_loopback_port() -> int:
         return int(handle.getsockname()[1])
 
 
-def wait_for_server(repository: Path, expected_instance: str, timeout: float = 30.0) -> dict[str, Any]:
+def port_available(port: int) -> bool:
+    """Report whether the gallery could bind this loopback port right now.
+
+    ``ThreadingHTTPServer`` sets ``SO_REUSEADDR``, so the probe sets it too:
+    a port left in TIME_WAIT stays usable while a live listener - typically a
+    gallery from another checkout - is correctly reported as taken.
+    """
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as handle:
+        handle.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        try:
+            handle.bind((LOOPBACK, port))
+        except OSError:
+            return False
+    return True
+
+
+def resolve_gallery_port(requested: int | None) -> int:
+    """Pick the port to bind, preferring an explicit request over the default."""
+    if requested is not None:
+        if not port_available(requested):
+            raise SystemExit(
+                f"gallery port {requested} is already in use on {LOOPBACK}. "
+                "Another Open Image Prompts checkout or an unrelated application owns "
+                "it.\nInspect the owner with "
+                f"`lsof -nP -iTCP:{requested} -sTCP:LISTEN` (Windows: "
+                f"`netstat -ano | findstr :{requested}`), or pass a different --port. "
+                "Omit --port to let the Skill choose a free port automatically."
+            )
+        return requested
+    if port_available(DEFAULT_PORT):
+        return DEFAULT_PORT
+    fallback = free_loopback_port()
+    # stdout stays pure JSON for the calling agent; notices go to stderr.
+    print(
+        f"gallery port {DEFAULT_PORT} is in use; using free port {fallback} instead",
+        file=sys.stderr,
+    )
+    return fallback
+
+
+def gallery_log_tail(repository: Path, lines: int = 12) -> str:
+    log_path = runtime_paths(repository)["log"]
+    with contextlib.suppress(OSError):
+        return "\n".join(log_path.read_text(encoding="utf-8", errors="replace").splitlines()[-lines:])
+    return ""
+
+
+def wait_for_server(
+    repository: Path,
+    expected_instance: str,
+    process: subprocess.Popen[bytes] | None = None,
+    timeout: float = 30.0,
+) -> dict[str, Any]:
     deadline = time.monotonic() + timeout
     while time.monotonic() < deadline:
         record = read_pid_record(repository)
@@ -210,18 +274,23 @@ def wait_for_server(repository: Path, expected_instance: str, timeout: float = 3
             status = server_status(repository)
             if status.get("status") == "running":
                 return status
+        # A failed bind kills the child immediately: report that instead of
+        # burning the whole timeout on a process that is already gone.
+        if process is not None and process.poll() is not None:
+            tail = gallery_log_tail(repository)
+            raise SystemExit(
+                f"gallery server exited with code {process.returncode} before it became ready"
+                + (f"\n{tail}" if tail else "")
+            )
         time.sleep(0.15)
-    log_path = runtime_paths(repository)["log"]
-    tail = ""
-    with contextlib.suppress(OSError):
-        tail = "\n".join(log_path.read_text(encoding="utf-8", errors="replace").splitlines()[-12:])
+    tail = gallery_log_tail(repository)
     raise SystemExit(f"gallery server did not become ready within {timeout:.0f}s" + (f"\n{tail}" if tail else ""))
 
 
-def start_server(repository: Path, port: int) -> dict[str, Any]:
+def start_server(repository: Path, port: int | None = None) -> dict[str, Any]:
     existing = server_status(repository)
     if existing.get("status") == "running":
-        if int(existing.get("port") or 0) != port:
+        if port is not None and int(existing.get("port") or 0) != port:
             raise SystemExit(
                 f"gallery server already runs on {existing.get('port')}; stop it before choosing port {port}"
             )
@@ -237,9 +306,11 @@ def start_server(repository: Path, port: int) -> dict[str, Any]:
     if not (repository / "web" / "node_modules" / ".bin" / "vite").is_file():
         raise SystemExit(
             "gallery dependencies are missing; run `npm run setup` in the "
-            "repository first to fetch the complete LFS corpus and install dependencies"
+            "repository first to download the dataset from GitHub Releases and "
+            "install the frontend dependencies"
         )
 
+    port = resolve_gallery_port(port)
     paths = runtime_paths(repository)
     paths["root"].mkdir(parents=True, exist_ok=True)
     instance_id = str(uuid.uuid4())
@@ -256,7 +327,7 @@ def start_server(repository: Path, port: int) -> dict[str, Any]:
         instance_id,
     ]
     with paths["log"].open("a", encoding="utf-8") as log:
-        subprocess.Popen(
+        process = subprocess.Popen(
             command,
             cwd=repository,
             stdin=subprocess.DEVNULL,
@@ -265,7 +336,7 @@ def start_server(repository: Path, port: int) -> dict[str, Any]:
             start_new_session=True,
             close_fds=True,
         )
-    return wait_for_server(repository, instance_id)
+    return wait_for_server(repository, instance_id, process)
 
 
 def stop_server(repository: Path) -> dict[str, Any]:
@@ -306,7 +377,12 @@ def wait_for_vite(process: subprocess.Popen[bytes], port: int, timeout: float = 
     raise RuntimeError("Vite did not become ready")
 
 
-def make_proxy_handler(repository: Path, vite_port: int, instance_id: str):
+def make_proxy_handler(
+    repository: Path,
+    vite_port: int,
+    instance_id: str,
+    activity: dict[str, float] | None = None,
+):
     sessions = runtime_paths(repository)["sessions"]
 
     class Handler(http.server.BaseHTTPRequestHandler):
@@ -320,6 +396,10 @@ def make_proxy_handler(repository: Path, vite_port: int, instance_id: str):
 
         def _handle(self) -> None:
             parsed = urllib.parse.urlsplit(self.path)
+            # Health probes must not keep an abandoned gallery alive, so only
+            # real gallery traffic counts as activity for the idle watchdog.
+            if activity is not None and parsed.path != "/_oip/health":
+                activity["at"] = time.monotonic()
             if parsed.path == "/_oip/health":
                 self._send_json({
                     "status": "running",
@@ -393,6 +473,21 @@ def make_proxy_handler(repository: Path, vite_port: int, instance_id: str):
     return Handler
 
 
+def gallery_idle_timeout() -> float:
+    raw = os.environ.get("OIP_GALLERY_IDLE_TIMEOUT", "").strip()
+    if not raw:
+        return float(DEFAULT_IDLE_TIMEOUT)
+    try:
+        value = float(raw)
+    except ValueError:
+        raise SystemExit(
+            f"OIP_GALLERY_IDLE_TIMEOUT must be a number of seconds, got {raw!r}"
+        ) from None
+    if value < 0:
+        raise SystemExit("OIP_GALLERY_IDLE_TIMEOUT cannot be negative")
+    return value
+
+
 def serve(repository: Path, port: int, vite_port: int, instance_id: str) -> int:
     paths = runtime_paths(repository)
     npm_name = os.environ.get("OIP_NPM", "npm")
@@ -431,7 +526,27 @@ def serve(repository: Path, port: int, vite_port: int, instance_id: str) -> int:
         else:
             raise SystemExit("gallery API did not become ready within 30 seconds")
         wait_for_vite(vite, vite_port)
-        server = http.server.ThreadingHTTPServer((LOOPBACK, port), make_proxy_handler(repository, vite_port, instance_id))
+        activity = {"at": time.monotonic()}
+        server = http.server.ThreadingHTTPServer(
+            (LOOPBACK, port),
+            make_proxy_handler(repository, vite_port, instance_id, activity),
+        )
+        idle_timeout = gallery_idle_timeout()
+        if idle_timeout > 0:
+            def idle_watchdog() -> None:
+                # The gallery is detached (start_new_session) so nothing else
+                # reaps it when an agent session ends without calling `stop`.
+                while True:
+                    time.sleep(min(30.0, idle_timeout))
+                    if time.monotonic() - activity["at"] >= idle_timeout:
+                        print(
+                            f"gallery idle for {idle_timeout:.0f}s; shutting down",
+                            flush=True,
+                        )
+                        server.shutdown()
+                        return
+
+            threading.Thread(target=idle_watchdog, daemon=True).start()
         atomic_json_write(paths["pid"], {
             "pid": os.getpid(),
             "port": port,
@@ -565,12 +680,18 @@ def create_gallery_session(repository: Path, args: argparse.Namespace) -> dict[s
     }
     session_path = runtime_paths(repository)["sessions"] / f"{session_id}.json"
     atomic_json_write(session_path, payload)
-    if not args.no_start:
-        start_server(repository, args.port)
+    if args.no_start:
+        # --no-start assumes an owned server is already up; adopt its real port.
+        existing = server_status(repository)
+        port = int(existing.get("port") or 0) if existing.get("status") == "running" else None
+        if port is None:
+            port = args.port if args.port is not None else DEFAULT_PORT
+    else:
+        port = int(start_server(repository, args.port)["port"])
     query = urllib.parse.urlencode({"session": session_id, "focus": focus, "lang": url_lang})
-    url = f"http://{LOOPBACK}:{args.port}/?{query}"
+    url = f"http://{LOOPBACK}:{port}/?{query}"
     status = server_status(repository)
-    url_usable = status.get("status") == "running" and int(status.get("port") or 0) == args.port
+    url_usable = status.get("status") == "running" and int(status.get("port") or 0) == port
     if args.open and url_usable:
         webbrowser.open(url)
     response = {
@@ -585,7 +706,7 @@ def create_gallery_session(repository: Path, args: argparse.Namespace) -> dict[s
     }
     if not url_usable:
         response["start_command"] = (
-            f"{sys.executable} {Path(__file__).resolve()} start --port {args.port}"
+            f"{sys.executable} {Path(__file__).resolve()} start --port {port}"
         )
     return response
 
@@ -600,6 +721,12 @@ def add_search_options(parser: argparse.ArgumentParser, *, include_lang: bool = 
     parser.add_argument("--tool")
     parser.add_argument("--max-prompt-chars", type=bounded_int(200, 20000), default=1600)
     parser.add_argument("--max-tags", type=bounded_int(1, 50), default=12)
+
+
+PORT_HELP = (
+    f"loopback gallery port; defaults to {DEFAULT_PORT} and falls back to a free "
+    "port when it is taken. An explicit value is never silently changed."
+)
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -617,7 +744,7 @@ def build_parser() -> argparse.ArgumentParser:
     subparsers.add_parser("status", help="show v2 archive coverage and owned gallery state")
 
     start = subparsers.add_parser("start", help="start the owned loopback gallery server")
-    start.add_argument("--port", type=int, default=DEFAULT_PORT)
+    start.add_argument("--port", type=int, default=None, help=PORT_HELP)
 
     subparsers.add_parser("stop", help="stop only the instance verified by the owned PID and health token")
 
@@ -628,7 +755,7 @@ def build_parser() -> argparse.ArgumentParser:
     gallery.add_argument("--derived-en")
     gallery.add_argument("--derived-zh")
     gallery.add_argument("--creative-spec", help="compact JSON object passed from the style skill")
-    gallery.add_argument("--port", type=int, default=DEFAULT_PORT)
+    gallery.add_argument("--port", type=int, default=None, help=PORT_HELP)
     gallery.add_argument("--no-start", action="store_true", help="write the session and print its URL without starting a server")
     gallery.add_argument("--open", action="store_true", help="open the URL after the owned server is ready")
 

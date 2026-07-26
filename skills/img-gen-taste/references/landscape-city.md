@@ -10,6 +10,7 @@
 
 ## landscape-golden-hour-wilderness
 
+- `id`: `landscape-golden-hour-wilderness`
 - **中文名 / English name：** 荒野黄金时刻电影风景 / Golden-Hour Cinematic Wilderness
 - **触发：** 用户需要山地、旷野、湖泊、乡间道路或自然旅行画面呈现安静、辽阔、可进入的电影感。
 - **不适用：** 产品广告、城市地标海报、奇幻巨构、需要人物占据主要画面的任务。
@@ -31,6 +32,7 @@ Cinematic wilderness landscape of {NATURAL LOCATION}, a tactile foreground of {R
 
 ## city-retro-neon-rain
 
+- `id`: `city-retro-neon-rain`
 - **中文名 / English name：** 雨夜复古霓虹城市 / Retro Neon Rain City
 - **触发：** 用户需要雨夜街道、音乐视觉、电影环境或复古未来城市呈现潮湿、孤独、霓虹驱动的都市氛围。
 - **不适用：** 人物肖像、明亮商业街纪实、白天城市规划图、要求准确复刻现实店招和建筑的任务。
@@ -51,6 +53,7 @@ Wide cinematic night view of {RETRO URBAN STREET / NARROW ALLEY}, rain-darkened 
 
 ## city-tilt-shift-miniature
 
+- `id`: `city-tilt-shift-miniature`
 - **中文名 / English name：** 移轴微缩城市 / Tilt-Shift Miniature City
 - **触发：** 用户需要城市、地标或旅行视觉呈现真实摄影般的玩具尺度、模型感和俯瞰趣味。
 - **不适用：** 正交信息图、等距 3D 城市、严肃建筑记录、需要整幅建筑都处于同一焦平面的画面。

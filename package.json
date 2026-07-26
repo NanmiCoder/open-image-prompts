@@ -13,10 +13,12 @@
     "data:pull:db": "node scripts/run_python.mjs scripts/fetch_dataset.py --db-only",
     "dev": "npm --prefix web run dev",
     "status": "node scripts/run_python.mjs skills/img-gen-prompts/scripts/oip.py status",
-    "test": "npm run verify:data && npm run test:api && npm run test:retrieval && npm --prefix web test",
+    "test": "npm run verify:docs && npm run verify:data && npm run test:api && npm run test:gallery && npm run test:retrieval && npm --prefix web test",
     "test:api": "node scripts/run_python.mjs server/test_oip_api.py",
     "test:retrieval": "node scripts/run_python.mjs -m unittest tests/test_related_retrieval.py && node scripts/run_python.mjs evals/retrieval/run_benchmark.py",
+    "test:gallery": "node scripts/run_python.mjs -m unittest tests/test_gallery_port.py",
     "verify:data": "node scripts/run_python.mjs scripts/verify_public_data.py",
+    "verify:docs": "node scripts/run_python.mjs scripts/verify_docs.py",
     "lint": "npm --prefix web run lint",
     "build": "npm --prefix web run build",
     "preview": "npm run build && npm --prefix web run preview"

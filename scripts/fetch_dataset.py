@@ -31,6 +31,11 @@ REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
 MANIFEST_PATH = REPOSITORY_ROOT / "data" / "dataset-manifest.json"
 MARKER_DIR = REPOSITORY_ROOT / ".oip" / "packs"
 CHUNK = 1024 * 1024
+# Pin the extraction filter rather than relying on the default, which warns on
+# Python 3.12/3.13 and changed in 3.14. The member checks in safe_extract already
+# reject everything the "data" filter would. tarfile.data_filter exists exactly in
+# the versions that accept the keyword, so this stays compatible with 3.10.0.
+EXTRACT_KWARGS: dict[str, str] = {"filter": "data"} if hasattr(tarfile, "data_filter") else {}
 
 
 def sha256_file(path: Path) -> str:
@@ -108,7 +113,7 @@ def safe_extract(archive: Path, root: Path) -> int:
             if not name.startswith("images/"):
                 raise SystemExit(f"unexpected path outside images/ in pack: {name!r}")
             member.mode = 0o644
-            tar.extract(member, path=root)
+            tar.extract(member, path=root, **EXTRACT_KWARGS)
             count += 1
     return count
 

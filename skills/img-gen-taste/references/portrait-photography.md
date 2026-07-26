@@ -14,6 +14,7 @@
 
 ## portrait-quiet-luxury-studio
 
+- `id`: `portrait-quiet-luxury-studio`
 - **中文名 / English name：** 安静奢华柔光棚拍 / Quiet Luxury Studio
 - **触发：** 用户需要克制、可信、松弛的品牌人像、职场人像或时装编辑图。
 - **不适用：** 霓虹夜景、强运动、夸张舞台妆、需要喧闹促销感的任务。
@@ -32,6 +33,7 @@ Quiet-luxury editorial portrait of {SUBJECT} wearing {SIMPLE TEXTURED OUTFIT}, r
 
 ## portrait-graphic-hard-shadow
 
+- `id`: `portrait-graphic-hard-shadow`
 - **中文名 / English name：** 硬影几何时尚 / Graphic Hard-Shadow Fashion
 - **触发：** 用户要求时装图像具有杂志封面式的平面冲击、清晰轮廓和几何影子。
 - **不适用：** 柔和生活方式、儿童人像、需要自然环境光连续性的纪实场景。
@@ -50,6 +52,7 @@ Graphic fashion editorial of {SUBJECT} in {ONE-COLOR SILHOUETTE OUTFIT}, posed t
 
 ## portrait-skin-first-beauty
 
+- `id`: `portrait-skin-first-beauty`
 - **中文名 / English name：** 皮肤优先美妆近景 / Skin-First Beauty
 - **触发：** 用户需要护肤、美妆、首饰或人物面部的高级特写，强调真实皮肤和精确眼神。
 - **不适用：** 全身时尚、复杂环境叙事、需要人物动作和场景关系的画面。
@@ -68,6 +71,7 @@ Extreme beauty portrait of {SUBJECT}, eyes as the primary focal point, 85mm clos
 
 ## portrait-neon-rain-cinematic
 
+- `id`: `portrait-neon-rain-cinematic`
 - **中文名 / English name：** 雨夜霓虹电影人像 / Neon Rain Cinematic
 - **触发：** 用户要求都市夜景、音乐视觉、科幻时尚或电影角色人像具有湿润、情绪化的霓虹氛围。
 - **不适用：** 真实企业头像、白底证件照、日光生活方式和不允许强色光的肤色广告。
@@ -87,6 +91,7 @@ Cinematic night portrait of {SUBJECT} on a rain-darkened {CITY STREET / WORKSHOP
 
 ## portrait-analog-golden-lifestyle
 
+- `id`: `portrait-analog-golden-lifestyle`
 - **中文名 / English name：** Portra 金色日常 / Analog Golden Lifestyle
 - **触发：** 用户需要咖啡馆、花园、街道、旅行或日常人物呈现自然、亲近、像朋友抓拍的胶片气质。
 - **不适用：** 严格棚拍、冷色科技广告、需要极高快门和锐利动作冻结的画面。
@@ -105,6 +110,7 @@ Candid analog lifestyle photograph of {SUBJECT DOING SIMPLE ACTION} at {CAFE / G
 
 ## portrait-direct-flash-after-hours
 
+- `id`: `portrait-direct-flash-after-hours`
 - **中文名 / English name：** 直闪夜生活快照 / Direct-Flash After Hours
 - **触发：** 用户需要便利店、街边餐馆、酒吧或派对时尚图具有生猛、偶然但仍可控的即时感。
 - **不适用：** 正式企业肖像、柔和婚礼人像、要求皮肤极度温润的美妆广告。
@@ -123,6 +129,7 @@ After-hours direct-flash fashion snapshot of {SUBJECT} in {CONVENIENCE STORE / S
 
 ## portrait-monochrome-sculptural
 
+- `id`: `portrait-monochrome-sculptural`
 - **中文名 / English name：** 黑白雕塑式编辑人像 / Monochrome Sculptural Editorial
 - **触发：** 用户需要时装、艺术家肖像或封面图通过轮廓、留白和灰阶呈现冷静、雕塑般的形体感。
 - **不适用：** 依赖彩色产品、节庆氛围、自然日常纪实或需要明确地点色彩的任务。
