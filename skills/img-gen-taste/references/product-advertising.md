@@ -14,6 +14,7 @@
 
 ## product-elemental-dark-luxury
 
+- `id`: `product-elemental-dark-luxury`
 - **中文名 / English name：** 暗黑元素奢侈品 / Elemental Dark Luxury
 - **触发：** 用户要求香氛、酒、护肤、饮料或精密产品呈现克制、深色、电影式的高级广告质感。
 - **不适用：** 电商白底主图、童趣产品、需要完整说明书或多 SKU 对比的画面。
@@ -37,6 +38,7 @@
 
 ## product-white-gallery-high-key
 
+- `id`: `product-white-gallery-high-key`
 - **中文名 / English name：** 白色画廊高键产品 / White Gallery High-Key
 - **触发：** 用户要求护肤、香水、珠宝等产品干净、可信、留白充分，接近画廊陈列或高端电商广告。
 - **不适用：** 需要强情绪夜景、动态爆炸、复杂场景叙事的广告。
@@ -58,6 +60,7 @@ Minimal high-key gallery product photograph of {PRODUCT}, clean white-to-ivory s
 
 ## product-kinetic-splash
 
+- `id`: `product-kinetic-splash`
 - **中文名 / English name：** 动态液体爆破 / Kinetic Splash
 - **触发：** 用户要求饮料、果味食品或清洁产品具有新鲜、能量、速度和社交广告冲击力。
 - **不适用：** 奢侈品静物、严肃医疗产品、需要安静可信感的电商主图。
@@ -79,6 +82,7 @@ High-speed commercial shot of {BEVERAGE OR FOOD PRODUCT}, stable centered hero, 
 
 ## product-as-world-surrealism
 
+- `id`: `product-as-world-surrealism`
 - **中文名 / English name：** 产品即世界 / Product-as-World Surrealism
 - **触发：** 用户希望产品广告有一个清楚、能一句话说完的超现实视觉隐喻。
 - **不适用：** 精确电商展示、结构说明、必须完全写实的合规广告。
@@ -99,6 +103,7 @@ Surreal premium campaign where {PRODUCT} literally becomes {ONE VISUAL METAPHOR}
 
 ## product-exploded-identity
 
+- `id`: `product-exploded-identity`
 - **中文名 / English name：** 爆炸结构与切面剧场 / Exploded Identity
 - **触发：** 用户需要解释产品内部结构、设计秩序或性能，把技术信息做成高级广告。
 - **不适用：** 没有明确结构的软性产品、人物肖像、只要求氛围而不关心工程可信度的画面。
@@ -120,6 +125,7 @@ Precision exploded-view campaign of {PRODUCT}, outer shell and functional compon
 
 ## product-midnight-automotive
 
+- `id`: `product-midnight-automotive`
 - **中文名 / English name：** 午夜高性能汽车 / Midnight Performance Automotive
 - **触发：** 用户要求跑车、摩托或交通工具呈现性能、阶层感和电影式夜景广告。
 - **不适用：** 二手车记录照、家庭生活方式汽车图、需要展示全套内饰功能的目录页。
@@ -141,6 +147,7 @@ Premium automotive campaign for {VEHICLE}, low three-quarter hero angle, body fi
 
 ## product-precision-macro
 
+- `id`: `product-precision-macro`
 - **中文名 / English name：** 微距机械与贵金属 / Precision Macro Horology
 - **触发：** 用户希望手表、珠宝、相机或精密器件通过结构精度和真实材料表现高级感。
 - **不适用：** 需要完整产品全貌、多人生活方式、低成本促销海报的任务。
