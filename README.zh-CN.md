@@ -17,6 +17,38 @@
 
 数据资产通过 [GitHub Releases](https://github.com/NanmiCoder/open-image-prompts/releases) 分发（不再使用 Git LFS）：仓库克隆保持轻量，`scripts/fetch_dataset.py` 会下载 SQLite 归档（约 80 MB）以及可选的按月图片包（合计约 4.3 GB），并做 sha256 校验。完整资产清单见 `data/dataset-manifest.json`。
 
+## 代码仓库和数据集的关系
+
+这个仓库本身只跟踪代码、前端、API、Skills、taxonomy 和轻量索引文件，不直接把数据库和图片提交进 Git 历史。实际数据通过 GitHub Releases 下载到本地 checkout：
+
+```text
+open-image-prompts/
+├── db/prompts.db.gz        # SQLite 数据集归档，来自 Release，gitignored
+├── images/                 # 图片包解压目录，来自 Release，gitignored
+├── .oip/runtime/prompts.db # 运行时解压后的只读 SQLite，gitignored
+├── data/dataset-manifest.json
+├── data/public-corpus.json
+└── web/dims.json
+```
+
+如果只 clone 仓库而不下载数据，前端/API/Skill 只有代码，不能完整本地预览和检索。首次使用请在仓库根目录执行：
+
+```bash
+npm run data:pull          # 下载 DB + 全量图片包，并校验 sha256
+```
+
+只想先下载 DB、不下载几 GB 图片包，可以执行：
+
+```bash
+npm run data:pull:db
+# 或者
+python3 scripts/fetch_dataset.py --db-only
+```
+
+此时检索可以工作，画廊会尽量回退到原始来源图片地址；完整本地图片预览需要下载图片包。
+
+后续数据集更新时，Git commit 通常只更新 `data/dataset-manifest.json`、`data/public-corpus.json`、`web/dims.json` 这些小文件；`prompts.db.gz` 和 `images-YYYY-MM.tar.gz` 作为 Release assets 发布。用户重新运行 `npm run data:pull` 即可根据 manifest 下载新版 DB，并且只拉取 sha256 变化的图片包。
+
 ## 一键启动
 
 先安装 [Git](https://git-scm.com/downloads) 和 [Node.js](https://nodejs.org/) 20.19+ 或 22.12+，然后克隆仓库：
@@ -41,6 +73,30 @@ start.bat
 也可以直接在文件管理器中双击 `start.bat`。启动脚本会按需安装 [uv](https://docs.astral.sh/uv/)、创建兼容的 Python 环境、从 GitHub Releases 下载数据集、安装前端依赖，并同时启动前后端。打开终端输出的本地地址即可。如果想跳过体积较大的图片包（画廊会回退到原始来源图片地址），启动前设置 `OIP_FETCH_SKIP_IMAGES=1`。
 
 首次启动会把压缩 SQLite 解压到已忽略的 `.oip/runtime/`；后续启动会复用 Python 环境，并按锁文件刷新依赖。
+
+## 数据集资产
+
+Git 仓库不会直接保存大体积数据文件。克隆仓库后，你拿到的是应用代码、Skills、公开元数据和 `data/dataset-manifest.json`。要完整运行本地画廊，还需要从 GitHub Releases 下载 SQLite 数据库和图片包。
+
+下载完整数据集：
+
+```bash
+npm run data:pull
+```
+
+这个命令会读取 `data/dataset-manifest.json`，下载 Release 资产，校验 sha256，并把文件放到应用期望的位置：
+
+- `db/prompts.db.gz`：压缩后的公开 SQLite 数据库。
+- `images/`：从 `images-YYYY-MM.tar.gz` 解压出来的按月图片包。
+- `.oip/packs/`：本地解压标记，下次执行时会跳过未变化的图片包。
+
+如果只想下载数据库，让画廊回退到原始来源图片地址：
+
+```bash
+npm run data:pull:db
+```
+
+这些生成文件会被 Git 忽略。数据集可以频繁发布，但仓库 commit 仍然保持轻量：Git 只跟踪代码和小体积元数据，`prompts.db.gz` 和图片归档通过 GitHub Releases 分发。
 
 ## 使用 Docker
 

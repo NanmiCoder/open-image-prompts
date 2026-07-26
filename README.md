@@ -17,6 +17,38 @@ The public dataset contains **15,033 source prompts**, **25,216 images**, **29,3
 
 Dataset assets ship through [GitHub Releases](https://github.com/NanmiCoder/open-image-prompts/releases) instead of Git LFS: the repository clone stays small, and `scripts/fetch_dataset.py` downloads the SQLite archive (~80 MB) plus optional monthly image packs (~4.3 GB total) with sha256 verification. See `data/dataset-manifest.json` for the exact asset list.
 
+## Repository vs. dataset assets
+
+This repository tracks the application code, frontend, API, Skills, taxonomy, and small dataset indexes. It intentionally does **not** commit the SQLite database or image files into Git history. Runtime data is downloaded from GitHub Releases into your local checkout:
+
+```text
+open-image-prompts/
+├── db/prompts.db.gz        # SQLite dataset archive from Releases, gitignored
+├── images/                 # extracted image packs from Releases, gitignored
+├── .oip/runtime/prompts.db # expanded read-only runtime SQLite, gitignored
+├── data/dataset-manifest.json
+├── data/public-corpus.json
+└── web/dims.json
+```
+
+If you only clone the repository without fetching the dataset, you have the code but not the local prompt/image corpus needed for full preview and retrieval. From the repository root, run:
+
+```bash
+npm run data:pull          # downloads DB + all image packs and verifies sha256
+```
+
+To download only the DB and skip the multi-gigabyte image packs:
+
+```bash
+npm run data:pull:db
+# or
+python3 scripts/fetch_dataset.py --db-only
+```
+
+DB-only mode supports search/retrieval while the gallery falls back to original source image URLs when local images are absent. Full local image preview requires the image packs.
+
+When the dataset updates, Git commits normally only change small files such as `data/dataset-manifest.json`, `data/public-corpus.json`, and `web/dims.json`. The large `prompts.db.gz` and `images-YYYY-MM.tar.gz` files are published as Release assets. Re-run `npm run data:pull` to download the new DB and only the image packs whose sha256 changed.
+
 ## One-click start
 
 Install [Git](https://git-scm.com/downloads) and [Node.js](https://nodejs.org/) 20.19+ or 22.12+, then clone the repository:
@@ -41,6 +73,30 @@ start.bat
 You can also double-click `start.bat` in File Explorer. The launcher installs [uv](https://docs.astral.sh/uv/) when needed, creates a compatible Python environment, downloads the dataset from GitHub Releases, installs the frontend packages, and starts both services. Open the local URL printed in the terminal. To skip the multi-gigabyte image packs (the gallery then falls back to original source URLs), set `OIP_FETCH_SKIP_IMAGES=1` before starting.
 
 The first start expands the compressed SQLite archive into the ignored `.oip/runtime/` directory. Later starts reuse the Python environment while refreshing locked dependencies.
+
+## Dataset assets
+
+The Git repository does not store the large dataset files directly. A clone gives you the app code, Skills, public metadata, and `data/dataset-manifest.json`. The SQLite database and image packs must be downloaded from GitHub Releases before the full local gallery can run.
+
+Download the complete dataset:
+
+```bash
+npm run data:pull
+```
+
+This command reads `data/dataset-manifest.json`, downloads the release assets, verifies their sha256 hashes, and places them in the paths expected by the app:
+
+- `db/prompts.db.gz` is the compressed public SQLite database.
+- `images/` receives the extracted monthly image packs from `images-YYYY-MM.tar.gz`.
+- `.oip/packs/` stores local extraction markers so unchanged packs are skipped on the next run.
+
+To download only the database and let the gallery fall back to original source image URLs:
+
+```bash
+npm run data:pull:db
+```
+
+These generated files are intentionally ignored by Git. Dataset releases may update often, but repository commits stay small: Git tracks code and lightweight metadata, while GitHub Releases carry `prompts.db.gz` and the image archives.
 
 ## Run with Docker
 
