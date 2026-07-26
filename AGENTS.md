@@ -104,6 +104,16 @@ when you touched documentation or dataset counts. Dataset counts quoted in prose
 are checked against `data/public-corpus.json`; update the data, not just the
 sentence.
 
+`npm run test:retrieval` ends in a gated benchmark that **fails closed**: every
+`related` result a query returns must carry a human judgement in
+`evals/retrieval/intents.jsonl` (`related_relevant_ids`). Publishing a new dataset
+can surface `related` references that nobody has judged yet, and the benchmark then
+fails by design. Resolving it requires looking at the images and recording a real
+verdict — never invent an entry to turn the suite green.
+
+If a start times out on a slow machine, raise `OIP_STARTUP_TIMEOUT` (seconds,
+default 180) rather than assuming the application is broken.
+
 CI covers `start.sh` on Ubuntu and macOS, `start.bat` on Windows, and the full
 check suite on Ubuntu.
 
