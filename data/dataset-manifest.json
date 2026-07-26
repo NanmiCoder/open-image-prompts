@@ -1,21 +1,21 @@
 {
   "schema": 1,
-  "dataset_version": "2026-07-26",
-  "generated_at": "2026-07-26T19:03:04.310018+00:00",
+  "dataset_version": "2026-07-27",
+  "generated_at": "2026-07-26T20:45:16.316939+00:00",
   "taxonomy_version": "oip-visual-v2",
   "selection": "full public corpus; labeling process tables excluded",
   "release_repo": "NanmiCoder/open-image-prompts",
   "db": {
     "asset": "prompts.db.gz",
-    "tag": "dataset-2026-07-26",
-    "sha256": "99a9830423ee9676cc8b2562521d2a8dd7086ab7621e421f799e6dd9fd3e191f",
-    "bytes": 80762896,
+    "tag": "dataset-2026-07-27",
+    "sha256": "776dc11aa7e8567bdfe80280a6f33593eee16779836ba24ee5b2979d839fd57c",
+    "bytes": 83108970,
     "counts": {
-      "prompts": 14749,
-      "images": 24578,
-      "translations": 29386,
-      "prompt_labels": 170226,
-      "media_labels": 279189,
+      "prompts": 15108,
+      "images": 25356,
+      "translations": 30216,
+      "prompt_labels": 175067,
+      "media_labels": 289258,
       "taxonomy_labels": 185
     }
   },
@@ -78,20 +78,20 @@
     },
     {
       "asset": "images-2026-06.tar.gz",
-      "tag": "dataset-2026-07-26",
-      "sha256": "c851b05e1e67438024032576414b1f440dda94cbff54542667dc4b4807a568fc",
-      "bytes": 1193321449,
-      "files": 6831,
-      "signature": "f916d7756624fb6b3c5988d5053a0350e8d565d899b8c855961e736c69219a95"
+      "tag": "dataset-2026-07-27",
+      "sha256": "3f0ac7c84e0fe9d9de2e8de2705d2df9462b0374ade0ea72dbbfe5e69e8370a2",
+      "bytes": 1193592069,
+      "files": 6832,
+      "signature": "02d4d3566b182c6cb49ea10b57b2202595ed1c89bc6401854976c40e18f31580"
     },
     {
       "asset": "images-2026-07.tar.gz",
-      "tag": "dataset-2026-07-26",
-      "sha256": "80e6272367ba2224b66dfd7f2a2f89e1c442c014bfcf107819b906dd79063e09",
-      "bytes": 766284380,
-      "files": 4478,
-      "signature": "7ee963da040f152c1dd2e62d49e29332be080d4440ec9bdd6052ccc73a5f3d81"
+      "tag": "dataset-2026-07-27",
+      "sha256": "651f468ebbdd62e8651f0c7342f793bff547178b0dd1809e3ee0962f995ac659",
+      "bytes": 904100737,
+      "files": 5255,
+      "signature": "133d47694f818e945a658acb10179db7394a0e14f7cda2148b6eb26a9fd982ec"
     }
   ],
-  "images_total": 24578
+  "images_total": 25356
 }
