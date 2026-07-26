@@ -87,6 +87,40 @@ class RelatedRetrievalTests(unittest.TestCase):
         )
         self.assertTrue(related_candidate_allowed(intent, poster))
 
+    def test_relaxing_a_facet_does_not_admit_its_opposite(self):
+        """A noir query used to return a bright daylight lifestyle portrait.
+
+        Relaxing `lighting:low-key` was treated as "the reference need not declare
+        low-key", which also let through references declaring natural daylight -
+        sharing only the monochrome treatment and none of the requested grammar.
+        """
+        intent = SearchIntent(
+            query="black-and-white low-key noir alley portrait",
+            language="en",
+            must_tags=[
+                IntentTag("subject_type:portrait", "must"),
+                IntentTag("visual_style:black-and-white", "must"),
+                IntentTag("scene:alleyway", "must"),
+            ],
+        )
+        base = (
+            tag("subject_type:portrait"),
+            tag("visual_style:black-and-white"),
+            tag("scene:alleyway"),
+        )
+        daylight = candidate(*base, tag("lighting:natural-daylight"))
+        rim_lit = candidate(*base, tag("lighting:rim-light"))
+        unlabelled = candidate(*base)
+
+        # Contradiction only applies to the facet actually relaxed.
+        self.assertFalse(related_candidate_allowed(intent, daylight, ["lighting:low-key"]))
+        self.assertTrue(related_candidate_allowed(intent, daylight, ["mood:mysterious"]))
+        self.assertTrue(related_candidate_allowed(intent, daylight))
+
+        # Omitting the facet, or carrying a compatible one, stays admissible.
+        self.assertTrue(related_candidate_allowed(intent, rim_lit, ["lighting:low-key"]))
+        self.assertTrue(related_candidate_allowed(intent, unlabelled, ["lighting:low-key"]))
+
     def test_related_merge_excludes_exact_ids_and_keeps_best_score(self):
         lower = candidate(tag("subject_type:product"), tweet_id="2", score=8)
         higher = candidate(tag("subject_type:product"), tweet_id="2", score=12)
