@@ -11,3 +11,10 @@ web/dist
 db/*.db
 db/*.db-wal
 db/*.db-shm
+
+# Dataset assets come from GitHub Releases and the build re-fetches the archive
+# itself (Dockerfile runs fetch_dataset.py --db-only). Without these two rules a
+# checkout that already ran `npm run data:pull` ships several gigabytes to the
+# Docker daemon as build context on every build.
+images
+db/*.db.gz
