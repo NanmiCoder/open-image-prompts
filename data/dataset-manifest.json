@@ -1,21 +1,21 @@
 {
   "schema": 1,
   "dataset_version": "2026-07-27",
-  "generated_at": "2026-07-27T07:15:36.071323+00:00",
+  "generated_at": "2026-07-27T07:50:09.565247+00:00",
   "taxonomy_version": "oip-visual-v2",
   "selection": "full public corpus; labeling process tables excluded",
   "release_repo": "NanmiCoder/open-image-prompts",
   "db": {
     "asset": "prompts.db.gz",
     "tag": "dataset-2026-07-27",
-    "sha256": "5f4b5beb133d89e17178bbf5e14d1887432da43a598db12a23bc2a1aead0c464",
-    "bytes": 82196368,
+    "sha256": "0e565cb37ba9b8d2726a9b2058596ede988ab88434f19795f0b5547b11e46473",
+    "bytes": 79259231,
     "counts": {
-      "prompts": 14937,
-      "images": 25540,
-      "translations": 29874,
-      "prompt_labels": 173221,
-      "media_labels": 291381,
+      "prompts": 13846,
+      "images": 23937,
+      "translations": 27692,
+      "prompt_labels": 161001,
+      "media_labels": 273872,
       "taxonomy_labels": 185
     }
   },
@@ -30,68 +30,68 @@
     },
     {
       "asset": "images-2025-12.tar.gz",
-      "tag": "dataset-2026-07-27",
-      "sha256": "e292b451202da79c66defdeebf2905c62666eb23c3f85a5f6f17d69b654dceb4",
-      "bytes": 3753885,
-      "files": 26,
-      "signature": "194ed0e548ef7a6282d660a1e34349a8f02a1b94471377d4cf119193f657a165"
+      "tag": "dataset-2026-07-27-1544",
+      "sha256": "b1e25beb51bf0e2c6fab93df4f81ce0d67a770589ed1a5ff387b72adf414c050",
+      "bytes": 1410625,
+      "files": 12,
+      "signature": "aeac287e404ce6730a694e0ebf91bd551dfdb979f8bea9d582d1675b419417a8"
     },
     {
       "asset": "images-2026-01.tar.gz",
-      "tag": "dataset-2026-07-27",
-      "sha256": "b85db730613a7210e4066ecd6719417701e91a3d608e8aafbc4997f2cd858fd7",
-      "bytes": 4216306,
-      "files": 23,
-      "signature": "6ab3a97e76869a1888da7d645d0b03fdb2cb7b029a8196cdbc06a08dde66fd5b"
+      "tag": "dataset-2026-07-27-1544",
+      "sha256": "7b6efa4e6f8f2e9aa0403b7163016521fd0e0675aeb7872669dfde4d1967abf7",
+      "bytes": 2701470,
+      "files": 13,
+      "signature": "7e45074c3edc8d62d38e6839b3b9d62d709153ea3efccd6ea8f3b0a8d3b4b038"
     },
     {
       "asset": "images-2026-02.tar.gz",
-      "tag": "dataset-2026-07-25",
-      "sha256": "4aab8ba0a1e2961a8ad507b0fb23f89cbf181361b83d7da1493041f459120d95",
-      "bytes": 7376926,
-      "files": 45,
-      "signature": "25f15b01520a36eda4523ad06c441e5b2e40c6249e9d8ccd2e0ae4e355ded6f0"
+      "tag": "dataset-2026-07-27-1544",
+      "sha256": "0e2b9ae77e0eb6d5d7301659e93b40061a8cdbe2b2c02782de334f0979ad6212",
+      "bytes": 5488741,
+      "files": 33,
+      "signature": "c74592546e2c2f57f8e3166052878208a112912ff11887d596025ba5eb509b62"
     },
     {
       "asset": "images-2026-03.tar.gz",
-      "tag": "dataset-2026-07-25",
-      "sha256": "fde2fa001bbb442b8b50453b2a8f3520704357eb631d69d7749c0fa9d4ce04f8",
-      "bytes": 594830760,
-      "files": 3821,
-      "signature": "b7c5d4a01afe843f7d69bc450f1f18947be043f6458d1f1fdbdc12430670e46d"
+      "tag": "dataset-2026-07-27-1544",
+      "sha256": "8cfbafe7a83badaa19fa69a299a70a3a838354f4af72fe9ac71c22b03c228fdc",
+      "bytes": 560643003,
+      "files": 3587,
+      "signature": "00dd4c3ca765367cc8c76688aa450e3823e9010aa1941d4c2d427dea88131d36"
     },
     {
       "asset": "images-2026-04.tar.gz",
-      "tag": "dataset-2026-07-25",
-      "sha256": "dc86728fcde47c54cd9ee0616fb407c17026cfdab41617a1a16c0b274055515b",
-      "bytes": 838624901,
-      "files": 4858,
-      "signature": "582d6f202f624809224537a3c8bb33e192e92ccb9bfc51b1fcf61b5df9c172dd"
+      "tag": "dataset-2026-07-27-1544",
+      "sha256": "dda91a282131c8e740290568ba26860bedf3a425b6418a46cbf4f8c7ce6fd3e4",
+      "bytes": 725138424,
+      "files": 4407,
+      "signature": "70d82e97c0255150f82dd2b000189a4818c8e22e2baa4c89c05fb0754d8cf67b"
     },
     {
       "asset": "images-2026-05.tar.gz",
-      "tag": "dataset-2026-07-27",
-      "sha256": "3a0b0fb9bdac796c5731cec20b5ba4fadb1e16f1e2593b338f4c1a494f2f1bcd",
-      "bytes": 853072087,
-      "files": 4521,
-      "signature": "3217a667c5606ae1ade92f3f242ad07052db75ad0eda2e6b4da6e286706b6da1"
+      "tag": "dataset-2026-07-27-1544",
+      "sha256": "d3874651ee4483a20ccc53ee8bd679159d6282c9f87789329f6ced5cc3eab76a",
+      "bytes": 813839782,
+      "files": 4317,
+      "signature": "24eb7d35392cec731c06f2af32dc6d4ee187a88b2d3b3bfec174e3460f40e140"
     },
     {
       "asset": "images-2026-06.tar.gz",
-      "tag": "dataset-2026-07-27",
-      "sha256": "3f0ac7c84e0fe9d9de2e8de2705d2df9462b0374ade0ea72dbbfe5e69e8370a2",
-      "bytes": 1193592069,
-      "files": 6832,
-      "signature": "02d4d3566b182c6cb49ea10b57b2202595ed1c89bc6401854976c40e18f31580"
+      "tag": "dataset-2026-07-27-1544",
+      "sha256": "ce307e7389d68c4784322cdd3483ddb568a50f151bf47f8c40391664a44a7445",
+      "bytes": 1148375089,
+      "files": 6578,
+      "signature": "dd786ba26b537b771eb3137fe0867f61712b5e13c30cbfe984575f02424bee8b"
     },
     {
       "asset": "images-2026-07.tar.gz",
-      "tag": "dataset-2026-07-27",
-      "sha256": "8e7cfc2615ccc97a57eccc1d60430c69843546e48352c8121a6bd68449a165fd",
-      "bytes": 928162846,
-      "files": 5413,
-      "signature": "c78659ffc19005d7baa581bb3346e17ab54b047322e5086b7c6f02dac55379ec"
+      "tag": "dataset-2026-07-27-1544",
+      "sha256": "6aa89437678e7e609b8b7ba988e3197d94cddf09b2bef5cf718f90ff03fb6f11",
+      "bytes": 842230696,
+      "files": 4989,
+      "signature": "782eb56c44bdc6c5c979f4aa3d0d62016e5eb31d7bde30ecada7be95df851e0f"
     }
   ],
-  "images_total": 25540
+  "images_total": 23937
 }
