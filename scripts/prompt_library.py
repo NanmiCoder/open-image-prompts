@@ -58,6 +58,7 @@ RELATED_RELAXABLE_TAGS = frozenset({
 # dimension; add a pair only after checking it against the retrieval benchmark,
 # since dropping a candidate also drops whatever coverage it provided.
 RELATED_CONTRADICTORY_TAGS: dict[str, frozenset[str]] = {
+    "lighting:neon-light": frozenset({"lighting:golden-hour", "lighting:natural-daylight", "lighting:high-key"}),
     "lighting:low-key": frozenset({"lighting:high-key", "lighting:natural-daylight"}),
     "lighting:high-key": frozenset({"lighting:low-key"}),
 }
@@ -304,6 +305,26 @@ def searchable_text(prompt: sqlite3.Row, tags: list[dict[str, Any]], translation
         str(prompt["prompt_text"] or ""), str(prompt["author"] or ""), str(prompt["tool"] or ""),
         *translations.values(), tag_text,
     ]).casefold()
+
+
+def requires_female_subject(intent: SearchIntent) -> bool:
+    female_terms = {"female", "woman", "women", "girl", "lady", "女性", "女人", "女孩", "女生", "女士"}
+    return any(female_terms & set(group) for group in intent.required_lexical_groups)
+
+
+def declares_male_subject(text: str) -> bool:
+    return any(
+        re.search(pattern, text)
+        for pattern in (
+            r'"gender"\s*:\s*"male"',
+            r'"gender"\s*:\s*"男性"',
+            r'"subject_type"\s*:\s*"man"',
+            r'"subject_type"\s*:\s*"male"',
+            r'"description"\s*:\s*"[^"]*\bman\b',
+            r'"description"\s*:\s*"[^"]*\bmale\b',
+            r'"description"\s*:\s*"[^"]*男性',
+        )
+    )
 
 
 def score_match(query: str, terms: list[str], text: str, tag_ids: set[str]) -> float:
@@ -635,6 +656,8 @@ def score_candidate(intent: SearchIntent, prompt: sqlite3.Row, prompt_tags: list
             return None
         score += 10.0
         reasons.append({"type": "required_lexical", "values": group_hits})
+    if requires_female_subject(intent) and declares_male_subject(text):
+        return None
     phrase = intent.query.casefold().strip()
     if phrase and lexical_term_present(text, phrase):
         score += phrase_weight
