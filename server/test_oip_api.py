@@ -39,10 +39,10 @@ def fetch_json_with_headers(url: str) -> tuple[dict, dict]:
         }
 
 
-def newest_tweet_id() -> str:
+def public_database_stats() -> dict[str, int | str]:
     database = ensure_working_database()
     with connect_read_only(database) as connection:
-        row = connection.execute(
+        newest = connection.execute(
             """
             SELECT p.tweet_id
             FROM prompts p
@@ -50,8 +50,13 @@ def newest_tweet_id() -> str:
             LIMIT 1
             """
         ).fetchone()
-    assert row is not None
-    return str(row["tweet_id"])
+        stats = {
+            "prompts": connection.execute("SELECT COUNT(*) FROM prompts").fetchone()[0],
+            "images": connection.execute("SELECT COUNT(*) FROM images").fetchone()[0],
+            "newest_tweet_id": str(newest["tweet_id"]) if newest else "",
+        }
+    assert stats["newest_tweet_id"]
+    return stats
 
 
 def main() -> int:
@@ -80,8 +85,11 @@ def main() -> int:
         else:
             raise RuntimeError("API did not become ready")
 
+        expected_stats = public_database_stats()
         catalog = fetch_json(f"{base}/api/catalog")
-        assert catalog["stats"]["prompts"] >= 14_000
+        assert catalog["stats"]["prompts"] == expected_stats["prompts"]
+        assert catalog["stats"]["images"] == expected_stats["images"]
+        assert catalog["stats"]["prompts"] >= 10_000
         assert catalog["stats"]["images"] >= 4_000
         assert catalog["tools"] and catalog["authors"] and catalog["tags"]
         selected_tag = catalog["tags"][0]["value"]
@@ -97,7 +105,7 @@ def main() -> int:
         assert {item["tweet_id"] for item in first["items"]}.isdisjoint(
             item["tweet_id"] for item in second["items"]
         )
-        assert first["items"][0]["tweet_id"] == newest_tweet_id()
+        assert first["items"][0]["tweet_id"] == expected_stats["newest_tweet_id"]
 
         oldest = fetch_json(f"{base}/api/prompts?limit=2&sort=oldest")
         assert [int(item["tweet_id"]) for item in oldest["items"]] == sorted(
