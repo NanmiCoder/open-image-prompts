@@ -12,6 +12,7 @@ export const dict = {
     'nav.label': 'Main navigation',
     'nav.status': 'Open collection · Always updating',
     'nav.status.short': 'Live',
+    'nav.github': 'Open GitHub repository',
 
     'hero.eyebrow': 'Open Image Prompts',
     'hero.eyebrow.suffix': 'Prompt–image archive',
@@ -119,6 +120,7 @@ export const dict = {
     'nav.label': '主导航',
     'nav.status': '开放图库 · 持续收录',
     'nav.status.short': '收录中',
+    'nav.github': '打开 GitHub 开源仓库',
 
     'hero.eyebrow': 'Open Image Prompts',
     'hero.eyebrow.suffix': '图像与提示词档案',

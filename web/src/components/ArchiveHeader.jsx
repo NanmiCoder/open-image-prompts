@@ -38,6 +38,30 @@ function Stat({ value, label, loading }) {
   )
 }
 
+const GITHUB_REPO_URL = 'https://github.com/NanmiCoder/open-image-prompts'
+
+function GithubLink() {
+  const { t } = useLang()
+  return (
+    <a
+      href={GITHUB_REPO_URL}
+      target="_blank"
+      rel="noreferrer"
+      aria-label={t('nav.github')}
+      title={t('nav.github')}
+      className="focus-ring group grid size-8 place-items-center rounded-full border border-line bg-surface/60 text-muted transition-colors duration-300 hover:border-line-strong hover:bg-elevate hover:text-ink"
+    >
+      <svg viewBox="0 0 24 24" aria-hidden="true" className="size-4 transition-transform duration-300 group-hover:scale-110">
+        <path
+          fill="currentColor"
+          d="M12 2C6.48 2 2 6.58 2 12.22c0 4.52 2.87 8.35 6.84 9.7.5.1.68-.22.68-.49 0-.24-.01-1.04-.01-1.89-2.78.62-3.37-1.22-3.37-1.22-.45-1.18-1.11-1.5-1.11-1.5-.91-.64.07-.63.07-.63 1 .07 1.53 1.06 1.53 1.06.9 1.56 2.35 1.11 2.92.85.09-.66.35-1.11.63-1.37-2.22-.26-4.55-1.14-4.55-5.06 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.71 0 0 .84-.28 2.75 1.05A9.32 9.32 0 0 1 12 5.92c.85 0 1.7.12 2.5.34 1.9-1.33 2.74-1.05 2.74-1.05.55 1.41.2 2.45.1 2.71.64.72 1.03 1.63 1.03 2.75 0 3.93-2.34 4.79-4.56 5.05.36.32.68.94.68 1.9 0 1.37-.01 2.47-.01 2.81 0 .27.18.59.69.49A10.04 10.04 0 0 0 22 12.22C22 6.58 17.52 2 12 2Z"
+        />
+      </svg>
+      <span className="sr-only">{t('nav.github')}</span>
+    </a>
+  )
+}
+
 function LangSwitch() {
   const { lang, setLang } = useLang()
   return (
@@ -111,6 +135,7 @@ export default function ArchiveHeader({ stats, loading, items }) {
               <span className="status-pulse" aria-hidden="true" />
               {t('nav.status')}
             </div>
+            <GithubLink />
             <LangSwitch />
           </div>
         </nav>
