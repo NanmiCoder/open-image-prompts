@@ -61,7 +61,12 @@ function App() {
     <div className="min-h-[100dvh] bg-abyss text-ink">
       <div className="grain-overlay" aria-hidden="true" />
 
-      <ArchiveHeader stats={archive.stats} loading={archive.loading} items={archive.items} />
+      <ArchiveHeader
+        stats={archive.stats}
+        loading={archive.loading}
+        items={archive.items}
+        onSelect={(item) => setSelectedId(item.tweet_id)}
+      />
 
       <main className="relative mx-auto w-full max-w-[1760px] pb-24">
         <GallerySessionPanel

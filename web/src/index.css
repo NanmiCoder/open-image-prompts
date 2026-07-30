@@ -144,7 +144,8 @@ a {
   animation: marquee-drift 90s linear infinite;
 }
 
-.marquee-track:hover {
+.marquee-track:hover,
+.marquee-track:focus-within {
   animation-play-state: paused;
 }
 

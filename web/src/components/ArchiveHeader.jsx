@@ -84,7 +84,8 @@ function LangSwitch() {
   )
 }
 
-function Marquee({ items }) {
+function Marquee({ items, onSelect }) {
+  const { t } = useLang()
   const slides = useMemo(() => {
     const picks = items.filter((item) => firstImageSources(item).length > 0).slice(0, 28)
     return [...picks, ...picks]
@@ -92,29 +93,38 @@ function Marquee({ items }) {
 
   if (slides.length === 0) return null
 
+  const uniqueCount = slides.length / 2
+
   return (
-    <div className="marquee-mask relative overflow-hidden border-t border-line py-3" aria-hidden="true">
+    <div className="marquee-mask relative overflow-hidden border-t border-line py-3" aria-label={t('gallery.featured')}>
       <div className="marquee-track gap-3 pr-3">
-        {slides.map((item, index) => (
-          <div
-            key={`${item.tweet_id}-${index}`}
-            className={`h-20 shrink-0 overflow-hidden rounded-lg outline-1 -outline-offset-1 outline-line md:h-28 ${item._ratio ? '' : 'aspect-[4/3]'}`}
-            style={item._ratio ? { aspectRatio: `${item._ratio}` } : undefined}
-          >
-            <SmartImage
-              sources={firstImageSources(item)}
-              alt=""
-              eager={index < 8}
-              className="h-full w-full"
-            />
-          </div>
-        ))}
+        {slides.map((item, index) => {
+          const isDuplicate = index >= uniqueCount
+          return (
+            <button
+              key={`${item.tweet_id}-${index}`}
+              type="button"
+              tabIndex={isDuplicate ? -1 : 0}
+              onClick={() => onSelect?.(item)}
+              aria-label={t('card.open', { author: item.author })}
+              className={`focus-ring h-20 shrink-0 overflow-hidden rounded-lg text-left outline-1 -outline-offset-1 outline-line transition-[outline-color,transform,filter] duration-300 hover:outline-line-strong hover:brightness-110 active:scale-[0.98] md:h-28 ${item._ratio ? '' : 'aspect-[4/3]'}`}
+              style={item._ratio ? { aspectRatio: `${item._ratio}` } : undefined}
+            >
+              <SmartImage
+                sources={firstImageSources(item)}
+                alt={isDuplicate ? '' : t('card.alt', { author: item.author })}
+                eager={index < 8}
+                className="h-full w-full"
+              />
+            </button>
+          )
+        })}
       </div>
     </div>
   )
 }
 
-export default function ArchiveHeader({ stats, loading, items }) {
+export default function ArchiveHeader({ stats, loading, items, onSelect }) {
   const { t } = useLang()
 
   return (
@@ -185,7 +195,7 @@ export default function ArchiveHeader({ stats, loading, items }) {
         </div>
       </div>
 
-      <Marquee items={items} />
+      <Marquee items={items} onSelect={onSelect} />
       <div className="hero-hairline" aria-hidden="true" />
     </header>
   )

@@ -56,6 +56,7 @@ export const dict = {
     'card.copyFailed': 'Copy failed — open details to retry',
 
     'gallery.label': 'Prompt gallery',
+    'gallery.featured': 'Featured prompt image strip',
     'gallery.loadMore': 'Load more',
     'gallery.end': '— End of the archive —',
     'gallery.loadingAria': 'Loading prompts',
@@ -164,6 +165,7 @@ export const dict = {
     'card.copyFailed': '复制失败，请打开详情重试',
 
     'gallery.label': '提示词画廊',
+    'gallery.featured': '精选提示词横向图廊',
     'gallery.loadMore': '继续浏览',
     'gallery.end': '— 已经浏览到档案末尾 —',
     'gallery.loadingAria': '正在加载提示词',
