@@ -1,21 +1,21 @@
 {
   "schema": 1,
-  "dataset_version": "2026-08-03-0309",
-  "generated_at": "2026-08-02T19:10:44.625568+00:00",
+  "dataset_version": "2026-08-03-0607",
+  "generated_at": "2026-08-02T22:08:17.017284+00:00",
   "taxonomy_version": "oip-visual-v2",
   "selection": "full public corpus; labeling process tables excluded",
   "release_repo": "NanmiCoder/open-image-prompts",
   "db": {
     "asset": "prompts.db.gz",
-    "tag": "dataset-2026-08-03-0309",
-    "sha256": "5fb1da99c42b9827f73fed666a5b85032e8d32da4cc21ba7bc2cab4110a81adf",
-    "bytes": 83349806,
+    "tag": "dataset-2026-08-03-0607",
+    "sha256": "8499d4fd7d3be8c966d32f8ab25e4f647cfeb5a750c0824161a8c0971f6c7b74",
+    "bytes": 83396923,
     "counts": {
-      "prompts": 14545,
-      "images": 25289,
-      "translations": 29090,
-      "prompt_labels": 169205,
-      "media_labels": 289570,
+      "prompts": 14555,
+      "images": 25299,
+      "translations": 29110,
+      "prompt_labels": 169324,
+      "media_labels": 289684,
       "taxonomy_labels": 185
     }
   },
@@ -94,12 +94,12 @@
     },
     {
       "asset": "images-2026-08.tar.gz",
-      "tag": "dataset-2026-08-03-0309",
-      "sha256": "b24589b3f8cf1dc5810b6a6ae4fb9c4bf9f5b013f243ab9e1fab88d8baa06074",
-      "bytes": 67623919,
-      "files": 397,
-      "signature": "32ae31f172a4d0892f757e6b0849b8f2ed50da5def5490bb4d9e7ac40f125094"
+      "tag": "dataset-2026-08-03-0607",
+      "sha256": "8608518142a0b163503a3c64c575c4be7cc5ffe9db57f3136ff264337e395da6",
+      "bytes": 69406818,
+      "files": 405,
+      "signature": "b4f0ef450d5351855ae89dcacba6332ff5a8c77d5151dac9c723c31117423438"
     }
   ],
-  "images_total": 24702
+  "images_total": 24710
 }
