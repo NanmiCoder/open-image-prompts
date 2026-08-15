@@ -15,7 +15,7 @@
 
 用编程智能体接入？[AGENTS.md](./AGENTS.md) 是精简版的安装、端口与 Skill 约定说明。
 
-公开数据集包含 **15,835 条来源提示词**、**27,799 张图片**、**31,668 条翻译**、**184,336 条有效 v2 提示词标签**和 **185 个封闭视觉标签**。打标模型、回填工具、供应商配置、测试批次、错误日志以及其他打标过程记录均不在公开仓库中。以上数字由 `npm run verify:docs` 与 `data/public-corpus.json` 对账。
+公开数据集包含 **15,847 条来源提示词**、**27,828 张图片**、**31,692 条翻译**、**184,479 条有效 v2 提示词标签**和 **185 个封闭视觉标签**。打标模型、回填工具、供应商配置、测试批次、错误日志以及其他打标过程记录均不在公开仓库中。以上数字由 `npm run verify:docs` 与 `data/public-corpus.json` 对账。
 
 数据资产通过 [GitHub Releases](https://github.com/NanmiCoder/open-image-prompts/releases) 分发（不再使用 Git LFS）：仓库克隆保持轻量，`scripts/fetch_dataset.py` 会下载 SQLite 归档（约 80 MB）以及可选的按月图片包（合计约 4.3 GB），并做 sha256 校验。完整资产清单见 `data/dataset-manifest.json`。
 
