@@ -1,21 +1,21 @@
 {
   "schema": 1,
-  "dataset_version": "2026-08-24-0607",
-  "generated_at": "2026-08-23T22:09:00.984651+00:00",
+  "dataset_version": "2026-08-24-0907",
+  "generated_at": "2026-08-24T01:08:33.198905+00:00",
   "taxonomy_version": "oip-visual-v2",
   "selection": "full public corpus; labeling process tables excluded",
   "release_repo": "NanmiCoder/open-image-prompts",
   "db": {
     "asset": "prompts.db.gz",
-    "tag": "dataset-2026-08-24-0607",
-    "sha256": "7441aed6e89181fae7ce93d3c0f5f60dc4a5819823d8aea6dbeeea79d3d48dcf",
-    "bytes": 97869504,
+    "tag": "dataset-2026-08-24-0907",
+    "sha256": "c15569a26d16d731cfef9730b8dc269e9f25db4c175f1ceb55c7c32c4fb5af14",
+    "bytes": 97973551,
     "counts": {
-      "prompts": 16561,
-      "images": 29221,
-      "translations": 33112,
-      "prompt_labels": 192805,
-      "media_labels": 334804,
+      "prompts": 16573,
+      "images": 29239,
+      "translations": 33138,
+      "prompt_labels": 192959,
+      "media_labels": 335075,
       "taxonomy_labels": 185
     }
   },
