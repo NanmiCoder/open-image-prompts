@@ -16,7 +16,7 @@ An open, local-first visual prompt archive with two installable Agent Skills:
 Working through a coding agent? [AGENTS.md](./AGENTS.md) is the condensed setup,
 port, and Skill contract.
 
-The public dataset contains **17,069 source prompts**, **30,235 images**, **34,126 translations**, **198,752 active v2 prompt labels**, and a closed taxonomy of **185 visual labels**. Labeling models, backfill tools, provider configuration, test runs, error logs, and other labeling-process records are not included. These counts are checked against `data/public-corpus.json` by `npm run verify:docs`.
+The public dataset contains **17,083 source prompts**, **30,270 images**, **34,150 translations**, **198,893 active v2 prompt labels**, and a closed taxonomy of **185 visual labels**. Labeling models, backfill tools, provider configuration, test runs, error logs, and other labeling-process records are not included. These counts are checked against `data/public-corpus.json` by `npm run verify:docs`.
 
 Dataset assets ship through [GitHub Releases](https://github.com/NanmiCoder/open-image-prompts/releases) instead of Git LFS: the repository clone stays small, and `scripts/fetch_dataset.py` downloads the SQLite archive (~80 MB) plus optional monthly image packs (~4.3 GB total) with sha256 verification. See `data/dataset-manifest.json` for the exact asset list.
 
