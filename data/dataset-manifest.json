@@ -1,21 +1,21 @@
 {
   "schema": 1,
-  "dataset_version": "2026-09-09-0907",
-  "generated_at": "2026-09-09T01:08:37.868572+00:00",
+  "dataset_version": "2026-09-09-2111",
+  "generated_at": "2026-09-09T13:12:52.282284+00:00",
   "taxonomy_version": "oip-visual-v2",
   "selection": "full public corpus; labeling process tables excluded",
   "release_repo": "NanmiCoder/open-image-prompts",
   "db": {
     "asset": "prompts.db.gz",
-    "tag": "dataset-2026-09-09-0907",
-    "sha256": "46062b167ecb6a605ec3d6f775df71d0888fc2722d98fe612e28e481fd298b1d",
-    "bytes": 108034224,
+    "tag": "dataset-2026-09-09-2111",
+    "sha256": "64cf1d62168e01c2e35d2ee00541e0ed74382966cb409e644825763f1fa89d90",
+    "bytes": 108288177,
     "counts": {
-      "prompts": 18028,
-      "images": 32004,
-      "translations": 36042,
-      "prompt_labels": 209974,
-      "media_labels": 366586,
+      "prompts": 18068,
+      "images": 32083,
+      "translations": 36124,
+      "prompt_labels": 210457,
+      "media_labels": 367546,
       "taxonomy_labels": 185
     }
   },
@@ -38,11 +38,11 @@
     },
     {
       "asset": "images-2026-01.tar.gz",
-      "tag": "dataset-2026-07-27-1544",
-      "sha256": "7b6efa4e6f8f2e9aa0403b7163016521fd0e0675aeb7872669dfde4d1967abf7",
-      "bytes": 2701470,
-      "files": 13,
-      "signature": "7e45074c3edc8d62d38e6839b3b9d62d709153ea3efccd6ea8f3b0a8d3b4b038"
+      "tag": "dataset-2026-09-09-2111",
+      "sha256": "05a1a590022e1eb046ac32f4b9ae986c6bfa56bd875de69bce9c0656c8c0babf",
+      "bytes": 2737407,
+      "files": 14,
+      "signature": "696f5dced820f1ccff4c434de454fbb3943e9bcc9d698a36e8103bc635a6026b"
     },
     {
       "asset": "images-2026-02.tar.gz",
@@ -102,12 +102,12 @@
     },
     {
       "asset": "images-2026-09.tar.gz",
-      "tag": "dataset-2026-09-09-0907",
-      "sha256": "fb428de858341c1aef756a84be6190afbfde5c73eae0a98d213c8e584c76c0ca",
-      "bytes": 259311621,
-      "files": 1407,
-      "signature": "ddd5b4794f937e344fe64d4b37c26f616cb62828593a56cb9e0198d67a637d21"
+      "tag": "dataset-2026-09-09-2111",
+      "sha256": "805b4c081b3854c29d505fc796427d29f46801ea6f064f5b7c7574c2be9bdd27",
+      "bytes": 273743329,
+      "files": 1485,
+      "signature": "25deb6e3258f522e99788f21c820b71affba0cc998ffadd42305f095959ab018"
     }
   ],
-  "images_total": 29989
+  "images_total": 30068
 }
